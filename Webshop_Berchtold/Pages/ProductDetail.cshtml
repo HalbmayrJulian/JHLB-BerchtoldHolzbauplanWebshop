@@ -1,0 +1,227 @@
+@page "/product/{id}"
+@model ProductDetailModel
+@{
+    ViewData["Title"] = "Produktdetails";
+}
+
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Startseite</a></li>
+        <li class="breadcrumb-item"><a href="#schrauben">Schrauben & Verbindungen</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Holzschrauben Premium 6x80mm</li>
+    </ol>
+</nav>
+
+<!-- Produktdetail Section -->
+<div class="container product-detail-container">
+    <div class="row">
+        <!-- Produktbild -->
+        <div class="col-lg-6 mb-4">
+            <div class="product-image-detail">
+                <div class="main-image">
+                    <div class="image-placeholder d-flex align-items-center justify-content-center">
+                        <i class="bi bi-wrench" style="font-size: 6rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                </div>
+                <!-- Thumbnail Gallery -->
+                <div class="image-gallery mt-3">
+                    <div class="row g-2">
+                        <div class="col-3">
+                            <div class="thumbnail-image active">
+                                <i class="bi bi-wrench"></i>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="thumbnail-image">
+                                <i class="bi bi-tools"></i>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="thumbnail-image">
+                                <i class="bi bi-gear"></i>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="thumbnail-image">
+                                <i class="bi bi-hammer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produktinformation -->
+        <div class="col-lg-6">
+            <div class="product-info">
+                <!-- Produkttitel und Bewertung -->
+                <div class="product-header mb-3">
+                    <h1 class="product-title">Holzschrauben Premium 6x80mm</h1>
+                    <p class="product-sku text-muted">Artikelnummer: HSP-680-100</p>
+                </div>
+
+                <!-- Preis -->
+                <div class="product-price mb-4">
+                    <div class="price-display">
+                        <span class="current-price">€24,99</span>
+                    </div>
+                    <p class="price-unit text-muted">pro Packung (100 Stück)</p>
+                    <p class="price-per-unit text-muted">€0,25 pro Stück</p>
+                </div>
+
+                <!-- Verfügbarkeit -->
+                <div class="availability mb-4">
+                    <div class="stock-status in-stock">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Sofort verfügbar - 48 Stück auf Lager</span>
+                    </div>
+                    <p class="delivery-info">
+                        <i class="bi bi-truck"></i>
+                        Versandfertig in 1-2 Werktagen
+                    </p>
+                </div>
+
+                <!-- Kurzbeschreibung -->
+                <div class="product-summary mb-4">
+                    <ul class="feature-list">
+                        <li><i class="bi bi-check2"></i> Edelstahl A2, rostfrei</li>
+                        <li><i class="bi bi-check2"></i> Teilgewinde für optimalen Halt</li>
+                        <li><i class="bi bi-check2"></i> Torx-Antrieb TX30</li>
+                        <li><i class="bi bi-check2"></i> Für Außenbereich geeignet</li>
+                    </ul>
+                </div>
+
+                <!-- Kaufbereich -->
+                <div class="purchase-section">
+                    <!-- Mengenauswahl -->
+                    <div class="quantity-selector mb-3">
+                        <label for="quantity" class="form-label">Menge:</label>
+                        <div class="input-group quantity-input">
+                            <button class="btn btn-outline-secondary quantity-btn" type="button" id="decrease-qty">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="48">
+                            <button class="btn btn-outline-secondary quantity-btn" type="button" id="increase-qty">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-lg w-100 mb-2 add-to-cart-btn">
+                            <i class="bi bi-cart-plus"></i>
+                            In den Warenkorb
+                        </button>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100 wishlist-btn">
+                                    <i class="bi bi-heart"></i>
+                                    Merken
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-outline-secondary w-100 compare-btn">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    Vergleichen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Produktbeschreibung Tabs -->
+    <div class="product-tabs mt-5">
+        <ul class="nav nav-tabs" id="productTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+                    Beschreibung
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">
+                    Technische Daten
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="productTabContent">
+            <!-- Beschreibung -->
+            <div class="tab-pane fade show active" id="description" role="tabpanel">
+                <div class="tab-content-inner">
+                    <h3>Produktbeschreibung</h3>
+                    <p>
+                        Unsere Premium Holzschrauben 6x80mm sind die perfekte Wahl für anspruchsvolle Holzbauarbeiten. 
+                        Hergestellt aus hochwertigem Edelstahl A2, bieten sie optimalen Korrosionsschutz und sind 
+                        besonders für Außenanwendungen geeignet.
+                    </p>
+                    <p>
+                        Das Teilgewinde sorgt für einen festen Halt im Holz, während der Torx-Antrieb TX30 
+                        ein sicheres und rutschfreies Eindrehen ermöglicht. Die Schrauben eignen sich ideal 
+                        für Terrassen, Fassaden, Holzkonstruktionen und andere Außenbauprojekte.
+                    </p>
+                    
+                    <h4>Anwendungsbereiche:</h4>
+                    <ul>
+                        <li>Terrassenbau und Deckenkonstruktionen</li>
+                        <li>Fassadenmontage</li>
+                        <li>Holzrahmenbau</li>
+                        <li>Carports und Pergolen</li>
+                        <li>Zäune und Sichtschutzwände</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Technische Daten -->
+            <div class="tab-pane fade" id="specifications" role="tabpanel">
+                <div class="tab-content-inner">
+                    <h3>Technische Spezifikationen</h3>
+                    <div class="specifications-table">
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Durchmesser:</div>
+                            <div class="col-sm-8 spec-value">6 mm</div>
+                        </div>
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Länge:</div>
+                            <div class="col-sm-8 spec-value">80 mm</div>
+                        </div>
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Material:</div>
+                            <div class="col-sm-8 spec-value">Edelstahl A2 (V2A)</div>
+                        </div>
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Antrieb:</div>
+                            <div class="col-sm-8 spec-value">Torx TX30</div>
+                        </div>
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Gewinde:</div>
+                            <div class="col-sm-8 spec-value">Teilgewinde</div>
+                        </div>
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Kopfform:</div>
+                            <div class="col-sm-8 spec-value">Senkkopf</div>
+                        </div>
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Verpackungseinheit:</div>
+                            <div class="col-sm-8 spec-value">100 Stück</div>
+                        </div>
+                        <div class="row spec-row">
+                            <div class="col-sm-4 spec-label">Gewicht pro Stück:</div>
+                            <div class="col-sm-8 spec-value">ca. 12g</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>
