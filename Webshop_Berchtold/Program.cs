@@ -1,4 +1,4 @@
-namespace WebShop_BerchtoldHolzbauPlan
+namespace Webshop_Berchtold
 {
     public class Program
     {

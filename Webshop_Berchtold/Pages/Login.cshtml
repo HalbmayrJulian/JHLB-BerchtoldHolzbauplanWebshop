@@ -1,0 +1,156 @@
+@page
+@model Webshop_Berchtold.Pages.LoginModel
+@{
+    ViewData["Title"] = "Anmelden";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="login-container">
+                <div class="text-center mb-4">
+                    <img src="~/images/logo.png" alt="Berchtold Logo" class="logo mb-3" style="height: 60px;" />
+                    <h2 class="h4" style="color: var(--color-dark);">Anmelden</h2>
+                    <p class="text-muted">Melden Sie sich in Ihrem Konto an</p>
+                </div>
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-Mail-Adresse</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="ihre.email@beispiel.com" required>
+                        <div class="invalid-feedback">
+                            Bitte geben Sie eine gültige E-Mail-Adresse ein.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Passwort</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Ihr Passwort" required>
+                            <button class="btn btn-secondary" type="button" onclick="togglePassword()">
+                                <i class="bi bi-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">
+                            Bitte geben Sie Ihr Passwort ein.
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Angemeldet bleiben
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Anmelden
+                        </button>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="mb-2">
+                            <a href="#" style="color: var(--color-green);">Passwort vergessen?</a>
+                        </p>
+                        <p class="text-muted">
+                            Noch kein Konto? 
+                            <a href="#" style="color: var(--color-green);" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                Jetzt registrieren
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Zusätzliche Anmeldeoptionen -->
+            <div class="text-center mt-4">
+                <p class="text-muted mb-3">Oder anmelden mit</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-google"></i> Mit Google anmelden
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-microsoft"></i> Mit Microsoft anmelden
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gast-Bestellung -->
+            <div class="text-center mt-4 p-3" style="background-color: var(--color-light-gray); border-radius: 8px;">
+                <h6 style="color: var(--color-dark);">Als Gast bestellen</h6>
+                <p class="text-muted small mb-2">Sie können auch ohne Anmeldung bestellen</p>
+                <a href="/" class="btn btn-secondary btn-sm">Weiter als Gast</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Registrierung Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 2px solid var(--color-green);">
+                <h5 class="modal-title" id="registerModalLabel" style="color: var(--color-dark);">Neues Konto erstellen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">Vorname</label>
+                            <input type="text" class="form-control" id="firstName" placeholder="Ihr Vorname" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Nachname</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="Ihr Nachname" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">E-Mail-Adresse</label>
+                        <input type="email" class="form-control" id="registerEmail" placeholder="ihre.email@beispiel.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Passwort</label>
+                        <input type="password" class="form-control" id="registerPassword" placeholder="Mindestens 8 Zeichen" required>
+                        <div class="form-text">Mindestens 8 Zeichen mit Buchstaben und Zahlen</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Passwort bestätigen</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Passwort wiederholen" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            Ich stimme den <a href="#" style="color: var(--color-green);">AGB</a> und der 
+                            <a href="#" style="color: var(--color-green);">Datenschutzerklärung</a> zu
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-person-plus"></i> Konto erstellen
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    var passwordField = document.getElementById('password');
+    var toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.className = 'bi bi-eye-slash';
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.className = 'bi bi-eye';
+    }
+}
+</script>

@@ -1,0 +1,257 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Startseite";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">Ihr Partner für Holzbau</h1>
+                <p class="hero-subtitle">Hochwertige Materialien und Werkzeuge für professionelle Holzbaulösungen</p>
+                <div class="mt-4">
+                    <a href="#products" class="btn btn-primary btn-lg me-3">Produkte entdecken</a>
+                    <a href="#" class="btn btn-secondary btn-lg">Beratung anfragen</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Kategorie Navigation -->
+<div class="container">
+    <div class="category-nav">
+        <nav class="nav nav-pills justify-content-center">
+            <a class="nav-link active" href="#alle">Alle Produkte</a>
+            <a class="nav-link" href="#schrauben">Schrauben & Verbindungen</a>
+            <a class="nav-link" href="#balken">Balken & Bretter</a>
+            <a class="nav-link" href="#werkzeuge">Werkzeuge</a>
+            <a class="nav-link" href="#daemmstoffe">Dämmstoffe</a>
+            <a class="nav-link" href="#holzschutz">Holzschutz</a>
+        </nav>
+    </div>
+</div>
+
+<!-- Produkte Section -->
+<section id="products" class="container">
+    <!-- Schrauben & Verbindungen -->
+    <div class="category-section">
+        <h2 class="category-title">
+            <i class="bi bi-tools"></i> Schrauben & Verbindungen
+        </h2>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-wrench" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Holzbauschrauben 6x80mm</h5>
+                        <p class="card-text text-muted">Verzinkte Holzbauschrauben für tragende Verbindungen</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€12.90</span>
+                            <small class="text-muted">pro 100 Stk.</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-nut" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Balkenschuhe 80x120mm</h5>
+                        <p class="card-text text-muted">Verzinkte Balkenschuhe für sichere Holzverbindungen</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€8.50</span>
+                            <small class="text-muted">pro Stück</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-paperclip" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Gewindestangen M12</h5>
+                        <p class="card-text text-muted">Verzinkte Gewindestangen verschiedene Längen</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€15.60</span>
+                            <small class="text-muted">pro Meter</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-circle" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Unterlegscheiben Set</h5>
+                        <p class="card-text text-muted">Verschiedene Größen für optimale Kraftverteilung</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€5.90</span>
+                            <small class="text-muted">pro Set</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Balken & Bretter -->
+    <div class="category-section">
+        <h2 class="category-title">
+            <i class="bi bi-building"></i> Balken & Bretter
+        </h2>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-columns" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Konstruktionsholz 60x120mm</h5>
+                        <p class="card-text text-muted">Trockenes Fichtenholz, kammergetrocknet</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€8.90</span>
+                            <small class="text-muted">pro lfd. Meter</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-layout-three-columns" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Bretter 24x200mm</h5>
+                        <p class="card-text text-muted">Gehobelte Fichtenbretter für Schalung</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€12.50</span>
+                            <small class="text-muted">pro lfd. Meter</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-bricks" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Leimholzbalken 100x200mm</h5>
+                        <p class="card-text text-muted">Verleimte Fichtenbinder für tragende Zwecke</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€28.90</span>
+                            <small class="text-muted">pro lfd. Meter</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-square" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">OSB-Platten 18mm</h5>
+                        <p class="card-text text-muted">Orientierte Spanplatten 2500x1250mm</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€34.90</span>
+                            <small class="text-muted">pro Platte</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Werkzeuge -->
+    <div class="category-section">
+        <h2 class="category-title">
+            <i class="bi bi-hammer"></i> Werkzeuge
+        </h2>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-hammer" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Zimmermannshammer 600g</h5>
+                        <p class="card-text text-muted">Professioneller Hammer mit Eschenstiel</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€45.90</span>
+                            <small class="text-muted">pro Stück</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-tools" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Akkuschrauber Set</h5>
+                        <p class="card-text text-muted">18V Li-Ion mit 2 Akkus und Ladegerät</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€189.90</span>
+                            <small class="text-muted">pro Set</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-rulers" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Zimmermannswinkel 600mm</h5>
+                        <p class="card-text text-muted">Präzisionswinkel für exakte Messungen</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€29.90</span>
+                            <small class="text-muted">pro Stück</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="bi bi-eyedropper" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title product-title">Wasserwaage 1200mm</h5>
+                        <p class="card-text text-muted">Aluminium-Wasserwaage mit 3 Libellen</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">€67.90</span>
+                            <small class="text-muted">pro Stück</small>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-2">In den Warenkorb</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

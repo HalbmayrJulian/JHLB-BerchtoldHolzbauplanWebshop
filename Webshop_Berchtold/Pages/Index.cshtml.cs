@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebShop_BerchtoldHolzbauPlan.Pages
+namespace Webshop_Berchtold.Pages
 {
     public class IndexModel : PageModel
     {
