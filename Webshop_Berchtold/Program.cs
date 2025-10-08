@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Webshop_Berchtold.Data;
+
 namespace Webshop_Berchtold
 {
     public class Program
@@ -8,6 +11,10 @@ namespace Webshop_Berchtold
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            // Entity Framework konfigurieren
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
