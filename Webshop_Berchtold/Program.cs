@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Webshop_Berchtold.Data;
 
 namespace Webshop_Berchtold
@@ -16,6 +17,20 @@ namespace Webshop_Berchtold
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Identity konfigurieren
+            builder.Services.AddDefaultIdentity<Webshop_Berchtold.Models.User>(options => 
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>();
+            
+            // Claims Transformation hinzufügen
+            builder.Services.AddScoped<Microsoft.AspNetCore.Authentication.IClaimsTransformation, Webshop_Berchtold.Services.UserClaimsTransformation>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -29,7 +44,8 @@ namespace Webshop_Berchtold
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

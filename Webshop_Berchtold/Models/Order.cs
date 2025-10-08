@@ -31,7 +31,7 @@ namespace Webshop_Berchtold.Models
         public string? Land { get; set; }
 
         // Foreign Key
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         // Navigation Properties
         public virtual User User { get; set; } = null!;

@@ -15,30 +15,28 @@
                 </div>
 
                 <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
                     <div class="mb-3">
-                        <label for="email" class="form-label">E-Mail-Adresse</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="ihre.email@beispiel.com" required>
-                        <div class="invalid-feedback">
-                            Bitte geben Sie eine gültige E-Mail-Adresse ein.
-                        </div>
+                        <label asp-for="Input.Email" class="form-label">E-Mail-Adresse</label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="ihre.email@beispiel.com" autocomplete="username">
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label for="password" class="form-label">Passwort</label>
+                        <label asp-for="Input.Password" class="form-label">Passwort</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Ihr Passwort" required>
+                            <input asp-for="Input.Password" class="form-control" placeholder="Ihr Passwort" autocomplete="current-password">
                             <button class="btn btn-secondary" type="button" onclick="togglePassword()">
                                 <i class="bi bi-eye" id="toggleIcon"></i>
                             </button>
                         </div>
-                        <div class="invalid-feedback">
-                            Bitte geben Sie Ihr Passwort ein.
-                        </div>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
-                        <label class="form-check-label" for="rememberMe">
+                        <input asp-for="Input.RememberMe" class="form-check-input">
+                        <label asp-for="Input.RememberMe" class="form-check-label">
                             Angemeldet bleiben
                         </label>
                     </div>
@@ -54,7 +52,7 @@
                     <div class="text-center">
                         <p class="text-muted">
                             Noch kein Konto? 
-                            <a href="#" style="color: var(--color-green);" data-bs-toggle="modal" data-bs-target="#registerModal">
+                            <a asp-page="/Register" style="color: var(--color-green);">
                                 Jetzt registrieren
                             </a>
                         </p>
@@ -65,69 +63,21 @@
     </div>
 </div>
 
-<!-- Registrierung Modal -->
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="border-bottom: 2px solid var(--color-green);">
-                <h5 class="modal-title" id="registerModalLabel" style="color: var(--color-dark);">Neues Konto erstellen</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="firstName" class="form-label">Vorname</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="Ihr Vorname" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="lastName" class="form-label">Nachname</label>
-                            <input type="text" class="form-control" id="lastName" placeholder="Ihr Nachname" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="registerEmail" class="form-label">E-Mail-Adresse</label>
-                        <input type="email" class="form-control" id="registerEmail" placeholder="ihre.email@beispiel.com" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="registerPassword" class="form-label">Passwort</label>
-                        <input type="password" class="form-control" id="registerPassword" placeholder="Mindestens 8 Zeichen" required>
-                        <div class="form-text">Mindestens 8 Zeichen mit Buchstaben und Zahlen</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Passwort bestätigen</label>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Passwort wiederholen" required>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
-                        <label class="form-check-label" for="agreeTerms">
-                            Ich stimme den <a href="#" style="color: var(--color-green);">AGB</a> und der 
-                            <a href="#" style="color: var(--color-green);">Datenschutzerklärung</a> zu
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-primary">
-                    <i class="bi bi-person-plus"></i> Konto erstellen
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function togglePassword() {
-    var passwordField = document.getElementById('password');
-    var toggleIcon = document.getElementById('toggleIcon');
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        toggleIcon.className = 'bi bi-eye-slash';
-    } else {
-        passwordField.type = 'password';
-        toggleIcon.className = 'bi bi-eye';
+    <script>
+    function togglePassword() {
+        var passwordField = document.querySelector('input[asp-for="Input.Password"]');
+        var toggleIcon = document.getElementById('toggleIcon');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.className = 'bi bi-eye-slash';
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.className = 'bi bi-eye';
+        }
     }
+    </script>
 }
-</script>

@@ -1,0 +1,69 @@
+@page
+@model Webshop_Berchtold.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Registrierung";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="login-container">
+                <div class="text-center mb-4">
+                    <img src="~/images/logo.png" alt="Berchtold Logo" class="logo mb-3" style="height: 60px;" />
+                    <h2 class="h4" style="color: var(--color-dark);">Konto erstellen</h2>
+                    <p class="text-muted">Registrieren Sie sich für ein neues Konto</p>
+                </div>
+
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Input.FirstName" class="form-label">Vorname</label>
+                        <input asp-for="Input.FirstName" class="form-control" placeholder="Ihr Vorname" autocomplete="given-name">
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.LastName" class="form-label">Nachname</label>
+                        <input asp-for="Input.LastName" class="form-control" placeholder="Ihr Nachname" autocomplete="family-name">
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Email" class="form-label">E-Mail-Adresse</label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="ihre.email@beispiel.com" autocomplete="username">
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label">Passwort</label>
+                        <input asp-for="Input.Password" class="form-control" placeholder="Ihr Passwort" autocomplete="new-password">
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Passwort bestätigen</label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Passwort wiederholen" autocomplete="new-password">
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Registrieren
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <p class="small text-muted">
+                            Bereits registriert? <a asp-page="/Login" class="text-decoration-none">Hier anmelden</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

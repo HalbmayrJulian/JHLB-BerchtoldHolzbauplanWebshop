@@ -13,7 +13,7 @@ namespace Webshop_Berchtold.Models
         public DateTime HinzugefuegtAm { get; set; } = DateTime.Now;
 
         // Foreign Keys
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public int ProductId { get; set; }
 
         // Navigation Properties

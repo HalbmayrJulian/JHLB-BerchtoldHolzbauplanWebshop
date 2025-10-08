@@ -1,16 +1,16 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Webshop_Berchtold.Models;
 
 namespace Webshop_Berchtold.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
         // DbSets für alle Modelle
-        public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -21,10 +21,9 @@ namespace Webshop_Berchtold.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // User Konfiguration
+            // User Konfiguration (erweitert IdentityUser)
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Email).IsUnique();
                 entity.Property(e => e.RegistrierungsDatum).HasDefaultValueSql("GETDATE()");
             });
 
