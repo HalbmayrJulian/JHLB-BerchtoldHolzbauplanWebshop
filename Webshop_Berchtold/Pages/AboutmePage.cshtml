@@ -1,0 +1,214 @@
+﻿@page
+@model Webshop_Berchtold.Pages.AboutmePageModel
+@{
+    Layout = "_Layout";
+}
+<style>
+    :root {
+        --max-width: 1200px;
+        --accent-dark: #222;
+        --muted: #666;
+        --gap: 2.5rem;
+    }
+
+    /* ensure full-height layout so footer kann unten bleiben */
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        /* verhindert horizontales Scrollen durch 100vw Tricks */
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Hauptbereich füllt verbleibenden Raum */
+    main.about-wrapper {
+        max-width: var(--max-width);
+        margin: 3.5rem auto;
+        padding: 0 1.25rem;
+        flex: 1 0 auto; /* wichtig: Hauptinhalt dehnt sich, Footer bleibt unten */
+        box-sizing: border-box;
+    }
+
+    /* fluid, responsive heading ohne media queries */
+    .about-title {
+        font-weight: 800;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        margin: 0 0 1.25rem 0;
+        letter-spacing: 1px;
+    }
+
+    .about-content {
+        display: flex;
+        gap: var(--gap);
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .about-text {
+        flex: 1 1 380px;
+        min-width: 220px;
+    }
+
+        .about-text p {
+            color: #333;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            font-size: clamp(.95rem, 1.6vw, 1rem);
+        }
+
+    .about-figure {
+        flex: 0 0 420px;
+        max-width: 420px;
+        min-width: 180px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .about-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 4px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        object-fit: cover;
+        aspect-ratio: 4 / 3;
+    }
+
+    /* Footer full-bleed + unten fixiert bei kurzer Seite */
+    .about-cta {
+        box-sizing: border-box;
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        background: var(--accent-dark);
+        color: #fff;
+        padding: 3.25rem 1.25rem;
+        margin-top: 3.5rem;
+        flex-shrink: 0; /* verhindert schrumpfen im flex-Layout */
+    }
+
+        .about-cta .inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            gap: 3rem;
+            align-items: flex-start;
+            padding: 0 0.25rem;
+            flex-wrap: wrap;
+        }
+
+    .cta-left {
+        flex: 1 1 320px;
+        min-width: 220px;
+    }
+
+        .cta-left h3 {
+            margin: 0 0 .5rem 0;
+            font-size: clamp(1rem,2.2vw,1.25rem);
+            font-weight: 700;
+        }
+
+    .cta-company {
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        margin-top: .5rem;
+    }
+
+    .cta-meta {
+        color: #ddd;
+        margin-top: .6rem;
+        font-size: clamp(.85rem,1.4vw,.95rem);
+        line-height: 1.5;
+    }
+
+    .cta-divider {
+        height: 1px;
+        background: rgba(255,255,255,0.12);
+        margin: 1.25rem 0;
+    }
+
+    .cta-right {
+        flex: 0 0 320px;
+        min-width: 180px;
+    }
+
+        .cta-right h4 {
+            margin: 0 0 .75rem 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+    .cta-links {
+        color: #ddd;
+        font-size: .95rem;
+        line-height: 1.9;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+</style>
+
+<main class="about-wrapper" role="main" aria-labelledby="ueber-mich-title">
+    <h1 id="ueber-mich-title" class="about-title">ÜBER MICH</h1>
+
+    <section class="about-content" aria-label="Über mich Inhalt">
+        <div class="about-text">
+            <p>
+                Der Baustoff Holz prägt meinen Lebensweg schon seit meiner Kindheit. Geboren wurde ich, Hans‑Werner Berchtold, in Schwarzenberg im Bregenzerwald, wo ich schon früh die ersten Erfahrungen im väterlichen Betrieb machen konnte. Nach meinen Pflichtschuljahren besuchte ich die Handelsschule Bezau. Anschließend absolvierte ich eine Zimmermannslehre. 1998 schloss ich meine Ausbildung mit dem Holzbaumeister ab.
+            </p>
+            <p>
+                Danach durfte ich viele Erfahrungen in namhaften Holzbauunternehmen sammeln. Seit Jänner 2016 bin ich als selbstständiger Holzbaumeister in Gaflenz tätig. Für mich ist es faszinierend, wie flexibel Holz ist. Es schafft eine einzigartige Wohn‑ und Arbeitsatmosphäre. Es lebt, atmet und reguliert so auf ganz natürliche Weise Temperatur und Feuchtigkeit.
+            </p>
+            <p>
+                Als nachwachsender Rohstoff erfüllt er ökologische Kriterien und setzt optische Akzente – egal, ob bei Wohnhäusern oder landwirtschaftlichen Objekten.
+            </p>
+        </div>
+
+        <figure class="about-figure" aria-hidden="false">
+            <img src="/images/HanswernerFoto.jpg" alt="Porträt Hans‑Werner Berchtold" class="about-image" />
+        </figure>
+    </section>
+</main>
+
+<footer class="about-cta" role="contentinfo" aria-label="Kontakt und Übersicht">
+    <div class="inner">
+        <div class="cta-left">
+            <h3>Ich freue mich auf Ihren Auftrag!</h3>
+            <div class="cta-company">Berchtold Holzbau‑Plan</div>
+            <div class="cta-meta">
+                Markt 168 | 3334 Gaflenz<br />
+                0677 61621048 | berchtold@holzbau‑plan.at
+            </div>
+
+            <div class="cta-divider" aria-hidden="true"></div>
+
+            <h4 style="color:#fff;margin:0 0 .5rem 0;">Öffnungszeiten</h4>
+            <div class="cta-meta">Um telefonische Terminvereinbarung wird gebeten.</div>
+        </div>
+
+        <aside class="cta-right" aria-label="Übersicht">
+            <h4>Übersicht</h4>
+            <nav class="cta-links" aria-label="Seitennavigation">
+                <div>Home</div>
+                <div>Über mich</div>
+                <div>Leistungen ▾</div>
+                <div>Galerie</div>
+                <div>Kontakt &amp; Anfahrt</div>
+            </nav>
+        </aside>
+    </div>
+</footer>
