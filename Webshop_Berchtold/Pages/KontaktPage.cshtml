@@ -1,0 +1,370 @@
+﻿@page
+@model Webshop_Berchtold.Pages.KontaktPageModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = "_Layout";
+    var apiKey = Configuration["GoogleMaps:ApiKey"] ?? "";
+}
+<header class="kontakt-hero" role="banner" aria-hidden="false">
+    <div class="kontakt-hero-top" aria-hidden="true"></div>
+    <div class="kontakt-hero-bottom" aria-hidden="true"></div>
+
+    <div class="hero-title">
+        KONTAKT &amp; ANFAHRT
+    </div>
+</header>
+
+<section class="kontakt-wrapper">
+    <div class="kontakt-container">
+        <div class="kontakt-left">
+            <h1 class="kontakt-title">NACHRICHT</h1>
+
+            <form method="post" class="kontakt-form" novalidate>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <select name="salutation" class="form-control" aria-label="Anrede">
+                            <option value="">Anrede</option>
+                            <option>Herr</option>
+                            <option>Frau</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="name" class="form-control" placeholder="Name" />
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" name="email" class="form-control" placeholder="E-Mail-Adresse" />
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="phone" class="form-control" placeholder="Telefonnummer" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <textarea name="message" class="form-control textarea" rows="6" placeholder="Ihre Nachricht"></textarea>
+                </div>
+
+                <p class="privacy-note">
+                    Die angegebenen Daten werden vom Betreiber der Website und technischen Dienstleister lediglich zur Bearbeitung der Anfrage verwendet.
+                    <a href="/datenschutz">Hier geht es zur Datenschutzerklärung.</a>
+                </p>
+
+                <button type="submit" class="btn-send">Senden</button>
+            </form>
+        </div>
+
+        <aside class="kontakt-right" aria-labelledby="kontaktHeading">
+            <h2 id="kontaktHeading" class="kontakt-title kontakt-title-right">KONTAKT</h2>
+
+            <div class="contact-item">
+                <div class="icon">
+                    <!-- Pin SVG -->
+                    <svg width="28" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 2C9.243 2 7 4.243 7 7c0 4.5 5 11 5 11s5-6.5 5-11c0-2.757-2.243-5-5-5z" fill="#7F9C2F" />
+                        <circle cx="12" cy="7" r="2" fill="#fff" />
+                    </svg>
+                </div>
+                <div class="contact-text">
+                    <strong>BERCHTOLD HOLZBAU-PLAN</strong>
+                    <div>Markt 168</div>
+                    <div>3334 Gaflenz</div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="contact-item">
+                <div class="icon">
+                    <!-- Phone SVG -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5 2h3a2 2 0 0 1 2 1.72c.12 1.05.36 2.07.7 3.03a2 2 0 0 1-.45 2.11L9.91 10.09a16 16 0 0 0 6 6l1.23-1.23a2 2 0 0 1 2.11-.45c.96.34 1.98.58 3.03.7A2 2 0 0 1 22 16.92z" fill="#7F9C2F" />
+                    </svg>
+                </div>
+                <div class="contact-text">
+                    <div>0677 61621048</div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="contact-item">
+                <div class="icon">
+                    <!-- Mail SVG -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="2" y="5" width="20" height="14" rx="2" fill="#7F9C2F" />
+                        <path d="M22 7l-10 7L2 7" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="contact-text">
+                    <div>berchtold@holzbau-plan.at</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<!-- Interaktive Google Map unter dem bisherigen Inhalt (API-Key vorhanden -> JS API, sonst iframe Fallback) -->
+<section class="kontakt-map-section" aria-label="Anfahrt & Karte">
+    <div class="kontakt-map-container">
+        @if (!string.IsNullOrWhiteSpace(apiKey))
+        {
+            <div id="kontakt-map" class="kontakt-map" role="region" aria-label="Karte: Berchtold Holzbau-Plan"></div>
+            <div class="map-actions">
+                <a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Markt+168+3334+Gaflenz">In Google Maps öffnen</a>
+            </div>
+        }
+        else
+        {
+            <!-- Fallback: interaktives iframe (funktioniert ohne API-Key) -->
+            <div class="kontakt-map">
+                <iframe width="100%"
+                        height="100%"
+                        frameborder="0"
+                        style="border:0"
+                        src="https://www.google.com/maps?q=Markt+168+3334+Gaflenz&output=embed"
+                        allowfullscreen
+                        aria-label="Karte: Berchtold Holzbau-Plan (Iframe)"></iframe>
+            </div>
+            <div class="map-actions">
+                <a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Markt+168+3334+Gaflenz">In Google Maps öffnen</a>
+            </div>
+        }
+    </div>
+</section>
+
+<style>
+    :root {
+        --accent: #7F9C2F;
+        --muted: #9a9a9a;
+        --border: #e0e0e0;
+        --max-width: 1200px;
+    }
+
+    /* Hero: zwei Bilder untereinander — noch größer */
+    .kontakt-hero {
+        position: relative;
+        overflow: visible;
+    }
+
+    .kontakt-hero-top,
+    .kontakt-hero-bottom {
+        width: 100%;
+        background-position: center center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: block;
+    }
+
+    /* Holzhütte als sehr großes Hintergrundbild */
+    .kontakt-hero-top {
+        height: 760px; /* deutlich größer */
+        background-image: url('/images/Holzhütte.png'); /* bei Problemen: /images/Holzh%C3%BCtte.png oder Umbenennen */
+    }
+
+    /* unteres Bild etwas kleiner, optional */
+    .kontakt-hero-bottom {
+        height: 360px;
+        background-image: url('/images/kontakt-hero-bottom.jpg');
+    }
+
+    /* Titel über den Bildern zentriert */
+    .hero-title {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        font-size: 72px;
+        color: #fff;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 8px 30px rgba(0,0,0,0.6);
+        pointer-events: none;
+        padding: 6px 12px;
+        z-index: 5;
+    }
+
+    /* Layout */
+    .kontakt-wrapper {
+        padding: 40px 20px 24px;
+    }
+
+    .kontakt-container {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        background: #fff;
+        padding: 40px 60px;
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 40px;
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.02);
+        margin-top: -180px; /* größerer overlap für großes Hero */
+        position: relative;
+        z-index: 3;
+    }
+
+    /* Map styles */
+    .kontakt-map-section {
+        max-width: var(--max-width);
+        margin: 24px auto 80px;
+        padding: 0 20px;
+    }
+
+    .kontakt-map {
+        width: 100%;
+        height: 620px; /* große Karte */
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+        border-radius: 2px;
+        background: #f5f5f5;
+    }
+
+    .map-actions {
+        margin-top: 10px;
+        text-align: left;
+    }
+
+    .map-link {
+        display: inline-block;
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    /* restliche Styles unverändert (gekürzt für Lesbarkeit) */
+    .kontakt-title {
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        font-size: 48px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #222;
+        margin: 0 0 24px 0;
+    }
+
+    .kontakt-right {
+        padding-left: 10px;
+        align-self: start;
+    }
+
+    .kontakt-form .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 18px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        font-size: 14px;
+        color: #222;
+        background: #fff;
+        box-sizing: border-box;
+    }
+
+    .textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .privacy-note {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 18px 0 22px;
+    }
+
+    .btn-send {
+        background: #111;
+        color: #fff;
+        padding: 10px 18px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .contact-item {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        padding: 18px 0;
+    }
+
+    .contact-text {
+        color: #333;
+        font-size: 14px;
+    }
+    
+    .kontakt-hero-top {
+        height: 420px;
+    }
+
+    .kontakt-hero-bottom {
+        height: 200px;
+    }
+
+    .hero-title {
+        font-size: 36px;
+        top: 50%;
+    }
+
+    .kontakt-map {
+        height: 360px;
+    }
+
+    }
+</style>
+
+@if (!string.IsNullOrWhiteSpace(apiKey))
+{
+    <script>
+        // initMap wird als callback aufgerufen
+        function initMap() {
+            var geocoder = new google.maps.Geocoder();
+            var address = "Markt 168, 3334 Gaflenz, Austria";
+
+            geocoder.geocode({ address: address }, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    var center = results[0].geometry.location;
+                    var map = new google.maps.Map(document.getElementById('kontakt-map'), {
+                        zoom: 15,
+                        center: center,
+                        mapTypeControl: false,
+                        streetViewControl: false
+                    });
+
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: center,
+                        title: 'Berchtold Holzbau-Plan'
+                    });
+
+                    var info = new google.maps.InfoWindow({
+                        content: '<strong>Berchtold Holzbau-Plan</strong><br/>Markt 168<br/>3334 Gaflenz'
+                    });
+
+                    marker.addListener('click', function () {
+                        info.open(map, marker);
+                    });
+
+                    info.open(map, marker);
+                } else {
+                    console.error('Geocode fehlgeschlagen: ' + status);
+                    var el = document.getElementById('kontakt-map');
+                    if (el) el.innerHTML = '<p style="padding:16px;color:#666">Karte konnte nicht geladen werden.</p>';
+                }
+            });
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=@apiKey&callback=initMap"></script>
+}
+else
+{
+    <script>console.warn('Google Maps API-Key nicht gesetzt — Fallback iframe wird verwendet.');</script>
+}
