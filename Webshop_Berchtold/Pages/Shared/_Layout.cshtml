@@ -63,6 +63,9 @@
                         {
                             var firstName = User.FindFirst("FirstName")?.Value ?? "Benutzer";
                             var lastName = User.FindFirst("LastName")?.Value ?? "";
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            var isAdmin = currentUser != null && await UserManager.IsInRoleAsync(currentUser, "Admin");
+                            
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle"></i> Hallo, @firstName
@@ -74,6 +77,11 @@
                                     <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profil</a></li>
                                     <li><a class="dropdown-item" href="#"><i class="bi bi-bag"></i> Meine Bestellungen</a></li>
                                     <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Einstellungen</a></li>
+                                    @if (isAdmin)
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin"><i class="bi bi-shield-lock"></i> Admin Panel</a></li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="post" asp-page="/Logout" class="d-inline">

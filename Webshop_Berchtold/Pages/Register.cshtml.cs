@@ -81,6 +81,9 @@ namespace Webshop_Berchtold.Pages
                 {
                     _logger.LogInformation("User created a new account with password.");
                     
+                    // Neue Benutzer bekommen die "User" Rolle
+                    await _userManager.AddToRoleAsync(user, "User");
+                    
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
