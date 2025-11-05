@@ -15,7 +15,7 @@ namespace Webshop_Berchtold
 
             // Entity Framework konfigurieren
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Identity konfigurieren
             builder.Services.AddDefaultIdentity<Webshop_Berchtold.Models.User>(options => 

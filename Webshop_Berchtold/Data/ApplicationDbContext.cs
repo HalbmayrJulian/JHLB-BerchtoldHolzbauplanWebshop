@@ -24,14 +24,14 @@ namespace Webshop_Berchtold.Data
             // User Konfiguration (erweitert IdentityUser)
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.RegistrierungsDatum).HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.RegistrierungsDatum).HasDefaultValueSql("datetime('now')");
             });
 
             // Product Konfiguration
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.Property(e => e.Preis).HasColumnType("decimal(18,2)");
-                entity.Property(e => e.ErstellungsDatum).HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.ErstellungsDatum).HasDefaultValueSql("datetime('now')");
                 
                 entity.HasOne(p => p.Kategorie)
                       .WithMany(c => c.Products)
@@ -43,7 +43,7 @@ namespace Webshop_Berchtold.Data
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.Property(e => e.GesamtBetrag).HasColumnType("decimal(18,2)");
-                entity.Property(e => e.BestellDatum).HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.BestellDatum).HasDefaultValueSql("datetime('now')");
                 
                 entity.HasOne(o => o.User)
                       .WithMany(u => u.Orders)
@@ -72,7 +72,7 @@ namespace Webshop_Berchtold.Data
             // ShoppingCartItem Konfiguration
             modelBuilder.Entity<ShoppingCartItem>(entity =>
             {
-                entity.Property(e => e.HinzugefuegtAm).HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.HinzugefuegtAm).HasDefaultValueSql("datetime('now')");
                 
                 entity.HasOne(sci => sci.User)
                       .WithMany(u => u.ShoppingCartItems)
