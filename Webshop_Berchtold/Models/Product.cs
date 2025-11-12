@@ -25,6 +25,12 @@ namespace Webshop_Berchtold.Models
         [MaxLength(200)]
         public string? BildUrl { get; set; }
 
+        [MaxLength(50)]
+        public string Einheit { get; set; } = "pro Stück";
+
+        [MaxLength(50)]
+        public string? IconClass { get; set; }
+
         public bool IstVerfuegbar { get; set; } = true;
 
         public DateTime ErstellungsDatum { get; set; } = DateTime.Now;

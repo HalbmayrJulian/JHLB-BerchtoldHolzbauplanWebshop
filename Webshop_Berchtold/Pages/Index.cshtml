@@ -44,305 +44,77 @@
     <div class="category-nav">
         <nav class="nav nav-pills justify-content-center">
             <a class="nav-link active" href="#alle">Alle Produkte</a>
-            <a class="nav-link" href="#schrauben">Schrauben & Verbindungen</a>
-            <a class="nav-link" href="#balken">Balken & Bretter</a>
-            <a class="nav-link" href="#werkzeuge">Werkzeuge</a>
-            <a class="nav-link" href="#daemmstoffe">Dämmstoffe</a>
-            <a class="nav-link" href="#holzschutz">Holzschutz</a>
+            @foreach (var category in Model.Categories)
+            {
+                var anchorId = category.Name.Replace(" ", "-").Replace("&", "").ToLower();
+                <a class="nav-link" href="#@anchorId">@category.Name</a>
+            }
         </nav>
     </div>
 </div>
 
 <!-- Produkte Section -->
 <section id="products" class="container">
-    <!-- Schrauben & Verbindungen -->
-    <div class="category-section">
-        <h2 class="category-title">
-            <i class="bi bi-tools"></i> Schrauben & Verbindungen
-        </h2>
-        <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/holzschrauben-6x80mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-wrench" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Holzschrauben Premium 6x80mm</h5>
-                            <p class="card-text text-muted">Edelstahl A2, rostfrei, Teilgewinde</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€24.99</span>
-                                <small class="text-muted">pro 100 Stk.</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/balkenschuhe-80x120mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-nut" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Balkenschuhe 80x120mm</h5>
-                            <p class="card-text text-muted">Verzinkte Balkenschuhe für sichere Holzverbindungen</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€8.50</span>
-                                <small class="text-muted">pro Stück</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/gewindestangen-m12" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-paperclip" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Gewindestangen M12</h5>
-                            <p class="card-text text-muted">Verzinkte Gewindestangen verschiedene Längen</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€15.60</span>
-                                <small class="text-muted">pro Meter</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/unterlegscheiben-set" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-circle" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Unterlegscheiben Set</h5>
-                            <p class="card-text text-muted">Verschiedene Größen für optimale Kraftverteilung</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€5.90</span>
-                                <small class="text-muted">pro Set</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @foreach (var category in Model.Categories)
+    {
+        if (Model.ProductsByCategory.ContainsKey(category.Id) && Model.ProductsByCategory[category.Id].Any())
+        {
+            var anchorId = category.Name.Replace(" ", "-").Replace("&", "").ToLower();
+            var products = Model.ProductsByCategory[category.Id];
+            
+            <!-- Kategorie Icon Mapping -->
+            var categoryIcons = new Dictionary<string, string>
+            {
+                { "Schrauben und Verbindungen", "bi-tools" },
+                { "Balken und Bretter", "bi-building" },
+                { "Werkzeuge", "bi-hammer" },
+                { "Dämmstoffe", "bi-house-fill" },
+                { "Holzschutz", "bi-shield-fill-check" }
+            };
+            var categoryIcon = categoryIcons.ContainsKey(category.Name) ? categoryIcons[category.Name] : "bi-box";
 
-    <!-- Balken & Bretter -->
-    <div class="category-section">
-        <h2 class="category-title">
-            <i class="bi bi-building"></i> Balken & Bretter
-        </h2>
-        <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/konstruktionsholz-60x120mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-columns" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Konstruktionsholz 60x120mm</h5>
-                            <p class="card-text text-muted">Trockenes Fichtenholz, kammergetrocknet</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€8.90</span>
-                                <small class="text-muted">pro lfd. Meter</small>
+            <div class="category-section" id="@anchorId">
+                <h2 class="category-title">
+                    <i class="@categoryIcon"></i> @category.Name
+                </h2>
+                <div class="row">
+                    @foreach (var product in products)
+                    {
+                        var productIcon = !string.IsNullOrEmpty(product.IconClass) ? product.IconClass : "bi-box";
+                        var productUrl = $"/product/{product.Id}";
+                        
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card product-card h-100">
+                                <a href="@productUrl" class="text-decoration-none text-dark">
+                                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                                        @if (!string.IsNullOrEmpty(product.BildUrl))
+                                        {
+                                            <img src="@product.BildUrl" alt="@product.Name" class="img-fluid" />
+                                        }
+                                        else
+                                        {
+                                            <i class="@productIcon" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                                        }
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title product-title">@product.Name</h5>
+                                        <p class="card-text text-muted">@product.Beschreibung</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="product-price">€@product.Preis.ToString("N2")</span>
+                                            <small class="text-muted">@product.Einheit</small>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary w-100">
+                                        <i class="bi bi-eye"></i> Details ansehen
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
+                    }
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/bretter-24x200mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-layout-three-columns" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Bretter 24x200mm</h5>
-                            <p class="card-text text-muted">Gehobelte Fichtenbretter für Schalung</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€12.50</span>
-                                <small class="text-muted">pro lfd. Meter</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/leimholzbalken-100x200mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-bricks" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Leimholzbalken 100x200mm</h5>
-                            <p class="card-text text-muted">Verleimte Fichtenbinder für tragende Zwecke</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€28.90</span>
-                                <small class="text-muted">pro lfd. Meter</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/osb-platten-18mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-square" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">OSB-Platten 18mm</h5>
-                            <p class="card-text text-muted">Orientierte Spanplatten 2500x1250mm</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€34.90</span>
-                                <small class="text-muted">pro Platte</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Werkzeuge -->
-    <div class="category-section">
-        <h2 class="category-title">
-            <i class="bi bi-hammer"></i> Werkzeuge
-        </h2>
-        <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/zimmermannshammer-600g" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-hammer" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Zimmermannshammer 600g</h5>
-                            <p class="card-text text-muted">Professioneller Hammer mit Eschenstiel</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€45.90</span>
-                                <small class="text-muted">pro Stück</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/akkuschrauber-set" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-tools" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Akkuschrauber Set</h5>
-                            <p class="card-text text-muted">18V Li-Ion mit 2 Akkus und Ladegerät</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€189.90</span>
-                                <small class="text-muted">pro Set</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/zimmermannswinkel-600mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-rulers" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Zimmermannswinkel 600mm</h5>
-                            <p class="card-text text-muted">Präzisionswinkel für exakte Messungen</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€29.90</span>
-                                <small class="text-muted">pro Stück</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100">
-                    <a href="/product/wasserwaage-1200mm" class="text-decoration-none text-dark">
-                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-eyedropper" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title product-title">Wasserwaage 1200mm</h5>
-                            <p class="card-text text-muted">Aluminium-Wasserwaage mit 3 Libellen</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">€67.90</span>
-                                <small class="text-muted">pro Stück</small>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="card-footer">
-                        <button class="btn btn-primary w-100">
-                            <i class="bi bi-eye"></i> Details ansehen
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        }
+    }
 </section>
