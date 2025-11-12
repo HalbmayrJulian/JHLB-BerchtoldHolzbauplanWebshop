@@ -119,7 +119,7 @@ function displaySearchResults(products, query) {
         const shortDesc = description.length > 60 ? description.substring(0, 60) + '...' : description;
         
         html += `
-            <a href="/ProductDetail?id=${product.id}" class="search-result-item">
+            <a href="/product/${product.id}" class="search-result-item">
                 <div class="search-result-icon">
                     ${product.bildUrl ? 
                         `<img src="${product.bildUrl}" alt="${product.name}" class="img-fluid" />` :
