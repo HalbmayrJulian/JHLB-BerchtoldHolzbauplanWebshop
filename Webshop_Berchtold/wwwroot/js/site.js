@@ -1,7 +1,160 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// Bitte siehe die Dokumentation unter https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// für Einzelheiten zur Konfiguration dieses Projekts zum Bündeln und Minimieren von statischen Webressourcen.
 
-// Write your JavaScript code.
+// Schreibe deinen JavaScript-Code.
+
+// ========================================
+// LIVE SEARCH FUNKTIONALITÄT
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchDropdown = document.getElementById('searchDropdown');
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const searchDropdownMenu = document.querySelector('.search-dropdown-menu');
+    let searchTimeout;
+
+    if (searchDropdown && searchInput && searchResults) {
+        // Focus auf Input wenn Dropdown geöffnet wird
+        searchDropdown.addEventListener('shown.bs.dropdown', function () {
+            searchInput.focus();
+        });
+
+        // Dropdown offen halten beim Klicken ins Input-Feld
+        if (searchDropdownMenu) {
+            searchDropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        // Input zurücksetzen beim Schließen
+        searchDropdown.addEventListener('hidden.bs.dropdown', function () {
+            searchInput.value = '';
+            searchResults.innerHTML = '';
+            searchResults.classList.remove('show');
+        });
+
+        // Live-Suche bei jedem Tastendruck
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            // Clear previous timeout
+            clearTimeout(searchTimeout);
+            
+            if (query.length === 0) {
+                searchResults.innerHTML = '';
+                searchResults.classList.remove('show');
+                return;
+            }
+            
+            // Zeige Loading Indicator
+            searchResults.innerHTML = `
+                <div class="search-loading">
+                    <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden">Suchen...</span>
+                    </div>
+                    <p>Suche nach "${query}"...</p>
+                </div>
+            `;
+            searchResults.classList.add('show');
+            
+            // Debounce: Warte 300ms nach letztem Tastendruck
+            searchTimeout = setTimeout(function() {
+                performSearch(query);
+            }, 300);
+        });
+
+        // Enter-Taste: Gehe zur Suchseite
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = this.value.trim();
+                if (query.length > 0) {
+                    window.location.href = `/Search?query=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    }
+});
+
+function performSearch(query) {
+    const searchResults = document.getElementById('searchResults');
+    
+    fetch(`/Search?handler=Search&query=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            displaySearchResults(data.products, query);
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            searchResults.innerHTML = `
+                <div class="alert alert-danger alert-sm m-0">
+                    <i class="bi bi-exclamation-triangle"></i> 
+                    Ein Fehler ist aufgetreten.
+                </div>
+            `;
+        });
+}
+
+function displaySearchResults(products, query) {
+    const searchResults = document.getElementById('searchResults');
+    
+    if (!products || products.length === 0) {
+        searchResults.innerHTML = `
+            <div class="no-results">
+                <i class="bi bi-search"></i>
+                <p>Keine Produkte gefunden</p>
+                <small class="text-muted">für "${query}"</small>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '<div class="list-group list-group-flush">';
+    
+    products.forEach(function(product) {
+        const icon = product.iconClass || 'bi-box';
+        const category = product.kategorieName || 'Allgemein';
+        const description = product.beschreibung || '';
+        const shortDesc = description.length > 60 ? description.substring(0, 60) + '...' : description;
+        
+        html += `
+            <a href="/ProductDetail?id=${product.id}" class="search-result-item">
+                <div class="search-result-icon">
+                    ${product.bildUrl ? 
+                        `<img src="${product.bildUrl}" alt="${product.name}" class="img-fluid" />` :
+                        `<i class="${icon}"></i>`
+                    }
+                </div>
+                <div class="search-result-details">
+                    <div class="search-result-title">${product.name}</div>
+                    <div class="search-result-description">${shortDesc}</div>
+                    <div class="search-result-category">
+                        <i class="bi bi-tag"></i> ${category}
+                    </div>
+                </div>
+                <div class="search-result-price">
+                    €${product.preis.toFixed(2)}
+                    <small>${product.einheit}</small>
+                </div>
+            </a>
+        `;
+    });
+    
+    html += '</div>';
+    
+    // "Alle Ergebnisse anzeigen" Link
+    html += `
+        <div class="text-center mt-2 pt-2 border-top">
+            <a href="/Search?query=${encodeURIComponent(query)}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-grid"></i> Alle anzeigen (${products.length}${products.length >= 8 ? '+' : ''})
+            </a>
+        </div>
+    `;
+    
+    searchResults.innerHTML = html;
+    searchResults.classList.add('show');
+}
 
 // ========================================
 // PRODUKTDETAIL SEITE FUNKTIONALITÄT
@@ -133,7 +286,7 @@ function updateQuantity() {
         quantityInput.value = value;
         
         // Hier könnten Preisberechnungen oder andere Updates stattfinden
-        console.log('Quantity updated to:', value);
+        console.log('Menge aktualisiert auf:', value);
     }
 }
 
