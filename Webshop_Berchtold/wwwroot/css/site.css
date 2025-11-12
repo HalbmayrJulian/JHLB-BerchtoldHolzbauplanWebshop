@@ -30,13 +30,19 @@ body {
   background-color: var(--color-white) !important;
   border-bottom: 3px solid var(--color-green) !important;
   box-shadow: 0 2px 4px rgba(28, 28, 25, 0.1) !important;
-  padding: 1rem 0;
+  padding: 1.5rem 0;
+}
+
+.navbar .container {
+  max-width: 1400px;
 }
 
 .navbar-brand {
   font-weight: bold;
   color: var(--color-dark) !important;
   font-size: 1.5rem;
+  margin-right: 3rem;
+  white-space: nowrap;
 }
 
 .navbar-brand:hover {
@@ -55,9 +61,9 @@ body {
 
 /* Logo Styling */
 .logo {
-  height: 40px;
+  height: 80px;
   width: auto;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 /* Buttons */
