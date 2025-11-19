@@ -1,0 +1,159 @@
+@page
+@model Webshop_Berchtold.Pages.Admin.CreateProductModel
+@{
+    ViewData["Title"] = "Neues Produkt erstellen";
+}
+
+<div class="admin-dashboard">
+    <!-- Header Section -->
+    <div class="admin-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-page="/Admin">Admin Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Neues Produkt</li>
+                        </ol>
+                    </nav>
+                    <h1 class="admin-title">
+                        <i class="bi bi-plus-circle"></i> Neues Produkt erstellen
+                    </h1>
+                    <p class="admin-subtitle text-muted">Fügen Sie ein neues Produkt zum Shop hinzu</p>
+                </div>
+            </div>
+            <hr class="admin-divider">
+        </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="container-fluid">
+        <div class="admin-tab-content">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <form method="post">
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <!-- Grundlegende Informationen -->
+                                <h4 class="mb-3 text-dark">
+                                    <i class="bi bi-info-circle text-success"></i> Grundlegende Informationen
+                                </h4>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label asp-for="Product.Name" class="form-label fw-bold">Produktname *</label>
+                                        <input asp-for="Product.Name" class="form-control" placeholder="z.B. Holzschrauben Premium 6x80mm" />
+                                        <span asp-validation-for="Product.Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="Product.KategorieId" class="form-label fw-bold">Kategorie</label>
+                                        <select asp-for="Product.KategorieId" asp-items="Model.Categories" class="form-select">
+                                            <option value="">-- Keine Kategorie --</option>
+                                        </select>
+                                        <span asp-validation-for="Product.KategorieId" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Product.Beschreibung" class="form-label fw-bold">Beschreibung</label>
+                                    <textarea asp-for="Product.Beschreibung" class="form-control" rows="3" 
+                                              placeholder="Detaillierte Produktbeschreibung"></textarea>
+                                    <span asp-validation-for="Product.Beschreibung" class="text-danger"></span>
+                                </div>
+
+                                <!-- Preis und Verfügbarkeit -->
+                                <h4 class="mb-3 mt-4 text-dark">
+                                    <i class="bi bi-cash-coin text-success"></i> Preis und Verfügbarkeit
+                                </h4>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label asp-for="Product.Preis" class="form-label fw-bold">Preis (€) *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">€</span>
+                                            <input asp-for="Product.Preis" class="form-control" type="number" 
+                                                   step="0.01" min="0" placeholder="0.00" />
+                                        </div>
+                                        <span asp-validation-for="Product.Preis" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="Product.Anzahl" class="form-label fw-bold">Anzahl auf Lager *</label>
+                                        <input asp-for="Product.Anzahl" class="form-control" type="number" 
+                                               min="0" placeholder="0" />
+                                        <span asp-validation-for="Product.Anzahl" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="Product.Einheit" class="form-label fw-bold">Einheit</label>
+                                        <input asp-for="Product.Einheit" class="form-control" placeholder="z.B. pro Stück" />
+                                        <span asp-validation-for="Product.Einheit" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input asp-for="Product.IstVerfuegbar" class="form-check-input" type="checkbox" 
+                                               role="switch" checked />
+                                        <label asp-for="Product.IstVerfuegbar" class="form-check-label fw-bold">
+                                            Produkt ist verfügbar
+                                        </label>
+                                    </div>
+                                    <small class="text-muted">Deaktivieren Sie dies, um das Produkt vorübergehend zu verstecken</small>
+                                </div>
+
+                                <!-- Optionale Informationen -->
+                                <h4 class="mb-3 mt-4 text-dark">
+                                    <i class="bi bi-image text-success"></i> Optionale Informationen
+                                </h4>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label asp-for="Product.BildUrl" class="form-label fw-bold">Bild URL</label>
+                                        <input asp-for="Product.BildUrl" class="form-control" 
+                                               placeholder="https://example.com/image.jpg" />
+                                        <span asp-validation-for="Product.BildUrl" class="text-danger"></span>
+                                        <small class="text-muted">Geben Sie die URL eines Produktbildes ein</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label asp-for="Product.IconClass" class="form-label fw-bold">Icon Klasse</label>
+                                        <input asp-for="Product.IconClass" class="form-control" 
+                                               placeholder="bi-wrench" />
+                                        <span asp-validation-for="Product.IconClass" class="text-danger"></span>
+                                        <small class="text-muted">Bootstrap Icon Klasse</small>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <hr class="my-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a asp-page="/Admin" class="btn btn-secondary">
+                                        <i class="bi bi-x-circle"></i> Abbrechen
+                                    </a>
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="bi bi-check-circle"></i> Produkt erstellen
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Hilfe-Box -->
+                    <div class="alert alert-info mt-4" role="alert">
+                        <h5 class="alert-heading"><i class="bi bi-info-circle"></i> Hinweise</h5>
+                        <ul class="mb-0">
+                            <li>Felder mit * sind Pflichtfelder</li>
+                            <li>Der Preis wird automatisch auf 2 Dezimalstellen gerundet</li>
+                            <li>Die Einheit wird auf den Produktkarten angezeigt (z.B. "€24.99 pro 100 Stk.")</li>
+                            <li>Bootstrap Icons finden Sie unter: <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
