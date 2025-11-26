@@ -33,8 +33,30 @@
                 <div class="col-lg-8">
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
-                            <form method="post">
+                            <form method="post" enctype="multipart/form-data">
                                 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <!-- Produktbild -->
+                                <h4 class="mb-3 text-dark">
+                                    <i class="bi bi-image text-success"></i> Produktbild
+                                </h4>
+
+                                <div class="mb-4">
+                                    <label for="BildDatei" class="form-label fw-bold">Bild hochladen</label>
+                                    <input type="file" 
+                                           id="BildDatei" 
+                                           name="BildDatei" 
+                                           class="form-control" 
+                                           accept="image/*"
+                                           onchange="previewImage(event)" />
+                                    <small class="text-muted">Unterstützte Formate: JPG, PNG, GIF (max. 5MB)</small>
+                                    
+                                    <!-- Bildvorschau -->
+                                    <div id="imagePreview" class="mt-3" style="display: none;">
+                                        <p class="fw-bold">Vorschau:</p>
+                                        <img id="preview" src="" alt="Vorschau" class="img-thumbnail" style="max-width: 300px; max-height: 300px;" />
+                                    </div>
+                                </div>
 
                                 <!-- Grundlegende Informationen -->
                                 <h4 class="mb-3 text-dark">
@@ -85,7 +107,7 @@
                                         <span asp-validation-for="Product.Anzahl" class="text-danger"></span>
                                     </div>
                                     <div class="col-md-4">
-                                        <label asp-for="Product.Einheit" class="form-label fw-bold">Einheit</label>
+                                        <label asp-for="Product.Einheit" class="form-label fw-bold">Einheit *</label>
                                         <input asp-for="Product.Einheit" class="form-control" placeholder="z.B. pro Stück" />
                                         <span asp-validation-for="Product.Einheit" class="text-danger"></span>
                                     </div>
@@ -104,24 +126,15 @@
 
                                 <!-- Optionale Informationen -->
                                 <h4 class="mb-3 mt-4 text-dark">
-                                    <i class="bi bi-image text-success"></i> Optionale Informationen
+                                    <i class="bi bi-gear text-success"></i> Optionale Informationen
                                 </h4>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-8">
-                                        <label asp-for="Product.BildUrl" class="form-label fw-bold">Bild URL</label>
-                                        <input asp-for="Product.BildUrl" class="form-control" 
-                                               placeholder="https://example.com/image.jpg" />
-                                        <span asp-validation-for="Product.BildUrl" class="text-danger"></span>
-                                        <small class="text-muted">Geben Sie die URL eines Produktbildes ein</small>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label asp-for="Product.IconClass" class="form-label fw-bold">Icon Klasse</label>
-                                        <input asp-for="Product.IconClass" class="form-control" 
-                                               placeholder="bi-wrench" />
-                                        <span asp-validation-for="Product.IconClass" class="text-danger"></span>
-                                        <small class="text-muted">Bootstrap Icon Klasse</small>
-                                    </div>
+                                <div class="mb-3">
+                                    <label asp-for="Product.IconClass" class="form-label fw-bold">Icon Klasse (optional)</label>
+                                    <input asp-for="Product.IconClass" class="form-control" 
+                                           placeholder="z.B. bi-wrench" />
+                                    <span asp-validation-for="Product.IconClass" class="text-danger"></span>
+                                    <small class="text-muted">Bootstrap Icon Klasse - wird verwendet wenn kein Bild hochgeladen wurde</small>
                                 </div>
 
                                 <!-- Action Buttons -->
@@ -143,9 +156,9 @@
                         <h5 class="alert-heading"><i class="bi bi-info-circle"></i> Hinweise</h5>
                         <ul class="mb-0">
                             <li>Felder mit * sind Pflichtfelder</li>
+                            <li>Laden Sie ein Bild hoch, damit Ihr Produkt professionell aussieht</li>
                             <li>Der Preis wird automatisch auf 2 Dezimalstellen gerundet</li>
-                            <li>Die Einheit wird auf den Produktkarten angezeigt (z.B. "€24.99 pro 100 Stk.")</li>
-                            <li>Bootstrap Icons finden Sie unter: <a href="https://icons.getbootstrap.com/" target="_blank">icons.getbootstrap.com</a></li>
+                            <li>Die Einheit wird auf den Produktkarten angezeigt (z.B. "€24.99 pro Stück")</li>
                         </ul>
                     </div>
                 </div>
@@ -156,4 +169,25 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+    </script>
 }

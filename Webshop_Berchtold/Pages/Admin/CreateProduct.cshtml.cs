@@ -12,14 +12,19 @@ namespace Webshop_Berchtold.Pages.Admin
     public class CreateProductModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public CreateProductModel(ApplicationDbContext context)
+        public CreateProductModel(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         [BindProperty]
         public Product Product { get; set; } = new Product();
+
+        [BindProperty]
+        public IFormFile? BildDatei { get; set; }
 
         public SelectList Categories { get; set; } = null!;
 
@@ -35,6 +40,31 @@ namespace Webshop_Berchtold.Pages.Admin
             {
                 await LoadCategoriesAsync();
                 return Page();
+            }
+
+            // Bild hochladen wenn vorhanden
+            if (BildDatei != null && BildDatei.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+                
+                // Erstelle uploads Ordner falls nicht vorhanden
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Generiere eindeutigen Dateinamen
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(BildDatei.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Speichere die Datei
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await BildDatei.CopyToAsync(fileStream);
+                }
+
+                // Setze den relativen Pfad für die Datenbank
+                Product.BildUrl = "/uploads/" + uniqueFileName;
             }
 
             _context.Products.Add(Product);

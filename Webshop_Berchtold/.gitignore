@@ -26,6 +26,10 @@ bld/
 *.sqlite3
 App_Data/
 
+# Uploaded files
+wwwroot/uploads/*
+!wwwroot/uploads/.gitkeep
+
 # User-specific files
 *.rsuser
 *.suo
