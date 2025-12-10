@@ -21,10 +21,12 @@ namespace Webshop_Berchtold
             builder.Services.AddDefaultIdentity<Webshop_Berchtold.Models.User>(options => 
             {
                 options.SignIn.RequireConfirmedAccount = false;
+                // Passwortrichtlinien lockern für Admin-Benutzer
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = 3;
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -38,7 +40,16 @@ namespace Webshop_Berchtold
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                await InitializeRolesAndAdminAsync(services);
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                
+                try
+                {
+                    await InitializeRolesAndAdminAsync(services, logger);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Ein Fehler ist beim Erstellen der Rollen und des Admin-Benutzers aufgetreten");
+                }
             }
 
             // Configure the HTTP request pipeline.
@@ -63,7 +74,7 @@ namespace Webshop_Berchtold
             app.Run();
         }
 
-        private static async Task InitializeRolesAndAdminAsync(IServiceProvider serviceProvider)
+        private static async Task InitializeRolesAndAdminAsync(IServiceProvider serviceProvider, ILogger logger)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<Webshop_Berchtold.Models.User>>();
@@ -75,7 +86,15 @@ namespace Webshop_Berchtold
                 var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                    var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    if (roleResult.Succeeded)
+                    {
+                        logger.LogInformation($"Rolle '{roleName}' wurde erfolgreich erstellt");
+                    }
+                    else
+                    {
+                        logger.LogError($"Fehler beim Erstellen der Rolle '{roleName}': {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+                    }
                 }
             }
 
@@ -91,17 +110,25 @@ namespace Webshop_Berchtold
                     Email = adminEmail,
                     FirstName = "Admin",
                     LastName = "Berchtold",
-                    EmailConfirmed = true,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    PasswordHash = "AQAAAAIAAYagAAAAEOK69r3YkacMuFhJ4vDT0RaVa39BwKYUpTQDqWbrH795cfm/PV72D+TkjiDdtUpHrg=="
+                    EmailConfirmed = true
                 };
                 
-                var result = await userManager.CreateAsync(admin);
+                // Passwort wird automatisch gehasht
+                var result = await userManager.CreateAsync(admin, "123!");
                 
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(admin, "Admin");
+                    logger.LogInformation($"Admin-Benutzer '{adminEmail}' wurde erfolgreich erstellt mit Passwort '123!'");
                 }
+                else
+                {
+                    logger.LogError($"Fehler beim Erstellen des Admin-Benutzers: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
+            }
+            else
+            {
+                logger.LogInformation($"Admin-Benutzer '{adminEmail}' existiert bereits");
             }
         }
     }
