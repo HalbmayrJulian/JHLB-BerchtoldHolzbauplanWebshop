@@ -1,0 +1,221 @@
+@page
+@model ManageCategoriesModel
+@{
+    ViewData["Title"] = "Kategorien verwalten";
+}
+
+<div class="admin-dashboard">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="admin-title">
+                        <i class="bi bi-folder"></i> Kategorien verwalten
+                    </h1>
+                    <p class="text-muted admin-subtitle">Erstellen, bearbeiten und löschen Sie Produktkategorien</p>
+                </div>
+                <div>
+                    <a asp-page="/Admin" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Zurück
+                    </a>
+                </div>
+            </div>
+            <hr class="admin-divider">
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle"></i> @Model.StatusMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="row">
+            <!-- Kategorien-Formular -->
+            <div class="col-lg-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            @(Model.IsEditMode ? "Kategorie bearbeiten" : "Neue Kategorie")
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-page-handler="@(Model.IsEditMode ? "Update" : "Create")">
+                            @if (Model.IsEditMode)
+                            {
+                                <input type="hidden" asp-for="Input.Id" />
+                            }
+
+                            <div class="mb-3">
+                                <label asp-for="Input.Name" class="form-label fw-bold">Name *</label>
+                                <input asp-for="Input.Name" class="form-control" placeholder="z.B. Werkzeuge" />
+                                <span asp-validation-for="Input.Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Input.Beschreibung" class="form-label fw-bold">Beschreibung</label>
+                                <textarea asp-for="Input.Beschreibung" class="form-control" rows="3" 
+                                          placeholder="Kurze Beschreibung"></textarea>
+                                <span asp-validation-for="Input.Beschreibung" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Input.IconClass" class="form-label fw-bold">Icon auswählen</label>
+                                <div class="icon-selector">
+                                    <div class="row g-2">
+                                        @{
+                                            var icons = new[] { 
+                                                "bi-hammer", "bi-wrench", "bi-tools", "bi-screwdriver",
+                                                "bi-nut", "bi-gear", "bi-box", "bi-columns",
+                                                "bi-bricks", "bi-rulers", "bi-pencil-square", "bi-paint-bucket",
+                                                "bi-droplet-fill", "bi-tree", "bi-house", "bi-building"
+                                            };
+                                        }
+                                        @foreach (var icon in icons)
+                                        {
+                                            <div class="col-3">
+                                                <label class="icon-option">
+                                                    <input type="radio" name="Input.IconClass" value="@icon" 
+                                                           @(Model.Input.IconClass == icon ? "checked" : "") />
+                                                    <span class="icon-box">
+                                                        <i class="@icon"></i>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <span asp-validation-for="Input.IconClass" class="text-danger small"></span>
+                            </div>
+
+                            @if (Model.IsEditMode)
+                            {
+                                <button type="submit" class="btn btn-success w-100 mb-2">
+                                    <i class="bi bi-check-circle"></i> Speichern
+                                </button>
+                                <a asp-page="/Admin/ManageCategories" class="btn btn-outline-secondary w-100">
+                                    Abbrechen
+                                </a>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-plus-circle"></i> Erstellen
+                                </button>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kategorien-Liste -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            Vorhandene Kategorien (@Model.Categories.Count)
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (!Model.Categories.Any())
+                        {
+                            <div class="alert alert-warning m-3">
+                                Noch keine Kategorien vorhanden.
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th width="60">ID</th>
+                                            <th>Name</th>
+                                            <th>Beschreibung</th>
+                                            <th width="80" class="text-center">Icon</th>
+                                            <th width="100" class="text-center">Produkte</th>
+                                            <th width="120" class="text-end">Aktionen</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var category in Model.Categories)
+                                        {
+                                            <tr>
+                                                <td class="text-muted">#@category.Id</td>
+                                                <td><strong>@category.Name</strong></td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(category.Beschreibung))
+                                                    {
+                                                        <small class="text-muted">
+                                                            @(category.Beschreibung.Length > 60 
+                                                                ? category.Beschreibung.Substring(0, 60) + "..." 
+                                                                : category.Beschreibung)
+                                                        </small>
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="text-muted">-</small>
+                                                    }
+                                                </td>
+                                                <td class="text-center">
+                                                    <i class="bi bi-folder" style="font-size: 1.5rem; color: var(--color-green);"></i>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-secondary">
+                                                        @category.Products.Count
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <a asp-page="/Admin/ManageCategories" 
+                                                       asp-route-editId="@category.Id" 
+                                                       class="btn btn-sm btn-outline-warning"
+                                                       title="Bearbeiten">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    
+                                                    @if (!category.Products.Any())
+                                                    {
+                                                        <form method="post" asp-page-handler="Delete" asp-route-id="@category.Id" 
+                                                              class="d-inline"
+                                                              onsubmit="return confirm('Kategorie @category.Name wirklich löschen?');">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Löschen">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-sm btn-outline-secondary" disabled 
+                                                                title="Kategorie enthält @category.Products.Count Produkt(e)">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                @if (Model.Categories.Any(c => c.Products.Any()))
+                {
+                    <div class="alert alert-info mt-3 mb-0">
+                        <small>
+                            <i class="bi bi-info-circle"></i> 
+                            Kategorien mit Produkten können nicht gelöscht werden.
+                        </small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

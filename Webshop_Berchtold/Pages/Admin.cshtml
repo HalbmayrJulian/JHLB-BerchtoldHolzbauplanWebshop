@@ -96,9 +96,10 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="btn btn-sm btn-warning" title="Bearbeiten">
+                                                <a asp-page="/Admin/EditProduct" asp-route-id="@product.Id" 
+                                                   class="btn btn-sm btn-warning" title="Bearbeiten">
                                                     <i class="bi bi-pencil"></i>
-                                                </button>
+                                                </a>
                                                 <button class="btn btn-sm btn-danger" title="Löschen">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
@@ -119,9 +120,9 @@
                         <h2 class="section-title">
                             <i class="bi bi-grid-3x3"></i> Kategorieverwaltung
                         </h2>
-                        <button class="btn btn-success">
-                            <i class="bi bi-plus-circle"></i> Neue Kategorie
-                        </button>
+                        <a asp-page="/Admin/ManageCategories" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Kategorien verwalten
+                        </a>
                     </div>
 
                     <div class="table-responsive">
@@ -142,21 +143,26 @@
                                         <td>@category.Id</td>
                                         <td>@category.Name</td>
                                         <td>@(category.Beschreibung ?? "-")</td>
-                                        <td>@category.Products.Count</td>
+                                        <td>
+                                            <span class="badge bg-secondary">@category.Products.Count</span>
+                                        </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="btn btn-sm btn-warning" title="Bearbeiten">
+                                                <a asp-page="/Admin/ManageCategories" asp-route-editId="@category.Id" 
+                                                   class="btn btn-sm btn-warning" title="Bearbeiten">
                                                     <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-danger" title="Löschen">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-info-circle"></i> 
+                        Verwenden Sie "Kategorien verwalten", um Kategorien zu erstellen, zu bearbeiten oder zu löschen.
                     </div>
                 </div>
             </div>
