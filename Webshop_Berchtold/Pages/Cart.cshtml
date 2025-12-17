@@ -1,0 +1,276 @@
+@page
+@model CartModel
+@{
+    ViewData["Title"] = "Mein Warenkorb";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index">Startseite</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Warenkorb</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="bi bi-cart"></i> Mein Warenkorb
+            </h1>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Schließen"></button>
+        </div>
+    }
+
+    @if (!Model.CartItems.Any())
+    {
+        <div class="alert alert-info">
+            <h4><i class="bi bi-cart-x"></i> Ihr Warenkorb ist leer</h4>
+            <p>Fügen Sie Produkte zu Ihrem Warenkorb hinzu, um fortzufahren.</p>
+            <a asp-page="/Index" class="btn btn-primary mt-2">
+                <i class="bi bi-arrow-left"></i> Weiter einkaufen
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Warenkorb-Items -->
+            <div class="col-lg-8 mb-4">
+                @foreach (var item in Model.CartItems)
+                {
+                    <div class="card mb-3 cart-item" data-item-id="@item.Id" data-product-id="@item.ProductId">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <!-- Produktbild -->
+                                <div class="col-md-2 col-lg-1 text-center">
+                                    @if (!string.IsNullOrEmpty(item.Product.BildUrl))
+                                    {
+                                        <img src="@item.Product.BildUrl" alt="@item.Product.Name" class="img-fluid" style="max-height: 80px;" />
+                                    }
+                                    else
+                                    {
+                                        <i class="@(item.Product.IconClass ?? "bi-box")" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                                    }
+                                </div>
+
+                                <!-- Produktinfo -->
+                                <div class="col-md-4 col-lg-4">
+                                    <h5 class="mb-1">
+                                        <a asp-page="/ProductDetail" asp-route-id="@item.ProductId" class="text-decoration-none">
+                                            @item.Product.Name
+                                        </a>
+                                    </h5>
+                                    <small class="text-muted">
+                                        <i class="bi bi-tag"></i> @item.Product.Kategorie?.Name
+                                    </small>
+                                    <div class="mt-1">
+                                        <small class="text-muted">@item.Product.Einheit</small>
+                                    </div>
+                                </div>
+
+                                <!-- Preis -->
+                                <div class="col-md-2 col-lg-2 text-center">
+                                    <div class="fw-bold">€@item.Product.Preis.ToString("N2")</div>
+                                    <small class="text-muted">pro Stück</small>
+                                </div>
+
+                                <!-- Mengenauswahl -->
+                                <div class="col-md-2 col-lg-2">
+                                    <div class="input-group input-group-sm">
+                                        <button class="btn btn-outline-secondary quantity-decrease" type="button" 
+                                                data-item-id="@item.Id" 
+                                                data-product-id="@item.ProductId">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        <input type="number" 
+                                               class="form-control text-center quantity-input" 
+                                               value="@item.Anzahl" 
+                                               min="1" 
+                                               max="@item.Product.Anzahl"
+                                               data-item-id="@item.Id"
+                                               data-product-id="@item.ProductId" />
+                                        <button class="btn btn-outline-secondary quantity-increase" type="button" 
+                                                data-item-id="@item.Id"
+                                                data-product-id="@item.ProductId">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted d-block text-center mt-1">
+                                        Max: @item.Product.Anzahl
+                                    </small>
+                                </div>
+
+                                <!-- Gesamtpreis -->
+                                <div class="col-md-1 col-lg-2 text-center">
+                                    <div class="fw-bold item-total" data-price="@item.Product.Preis" data-quantity="@item.Anzahl">
+                                        €@((item.Product.Preis * item.Anzahl).ToString("N2"))
+                                    </div>
+                                </div>
+
+                                <!-- Entfernen Button -->
+                                <div class="col-md-1 col-lg-1 text-center">
+                                    <form method="post" asp-page-handler="RemoveItem" class="d-inline">
+                                        <input type="hidden" name="cartItemId" value="@item.Id" />
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Entfernen">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Weiter einkaufen Button -->
+                <div class="mt-3">
+                    <a asp-page="/Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Weiter einkaufen
+                    </a>
+                </div>
+            </div>
+
+            <!-- Zusammenfassung -->
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calculator"></i> Zusammenfassung
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Zwischensumme:</span>
+                            <span class="fw-bold" id="subtotal">€@Model.Zwischensumme.ToString("N2")</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Versandkosten:</span>
+                            <span class="text-success fw-bold">Kostenlos</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                            <span>MwSt. (@((CartModel.MwStSatz * 100).ToString("0"))%):</span>
+                            <span id="mwst">€@Model.MwSt.ToString("N2")</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5>Gesamt:</h5>
+                            <h5 class="text-success" id="total">€@Model.Gesamt.ToString("N2")</h5>
+                        </div>
+
+                        <button class="btn btn-success btn-lg w-100 mb-2" disabled>
+                            <i class="bi bi-credit-card"></i> Zur Kasse
+                        </button>
+                        
+                        <div class="alert alert-info alert-sm mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            <small>Kostenloser Versand bei allen Bestellungen</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mengenänderung Handler
+        document.querySelectorAll('.quantity-decrease, .quantity-increase').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const itemId = this.dataset.itemId;
+                const productId = this.dataset.productId;
+                const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+                const currentValue = parseInt(input.value);
+                const maxValue = parseInt(input.max);
+                
+                if (this.classList.contains('quantity-decrease')) {
+                    if (currentValue > 1) {
+                        input.value = currentValue - 1;
+                        updateQuantity(itemId, productId, currentValue - 1);
+                    }
+                } else {
+                    if (currentValue < maxValue) {
+                        input.value = currentValue + 1;
+                        updateQuantity(itemId, productId, currentValue + 1);
+                    }
+                }
+            });
+        });
+
+        // Direkte Eingabe
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const itemId = this.dataset.itemId;
+                const productId = this.dataset.productId;
+                let value = parseInt(this.value);
+                const max = parseInt(this.max);
+                
+                if (value < 1) value = 1;
+                if (value > max) value = max;
+                
+                this.value = value;
+                updateQuantity(itemId, productId, value);
+            });
+        });
+    });
+
+    function updateQuantity(itemId, productId, quantity) {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        
+        fetch('/Cart?handler=UpdateQuantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': token ? token.value : ''
+            },
+            body: `cartItemId=${itemId}&productId=${productId}&quantity=${quantity}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update item total
+                const itemRow = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+                const itemTotal = itemRow.querySelector('.item-total');
+                const price = parseFloat(itemTotal.dataset.price);
+                itemTotal.textContent = `€${(price * quantity).toFixed(2)}`;
+                
+                // Update summary
+                document.getElementById('subtotal').textContent = `€${data.zwischensumme.toFixed(2)}`;
+                document.getElementById('mwst').textContent = `€${data.mwst.toFixed(2)}`;
+                document.getElementById('total').textContent = `€${data.gesamt.toFixed(2)}`;
+                
+                // Update cart badge
+                updateCartBadge();
+            } else {
+                alert(data.message);
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ein Fehler ist aufgetreten');
+        });
+    }
+
+    function updateCartBadge() {
+        fetch('/Cart?handler=CartCount')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.querySelector('.navbar .badge');
+                if (badge) {
+                    badge.textContent = data.count;
+                }
+            });
+    }
+</script>
+}

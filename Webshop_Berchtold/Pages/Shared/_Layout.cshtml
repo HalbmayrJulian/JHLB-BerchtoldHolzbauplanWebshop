@@ -127,11 +127,7 @@
                             </li>
                         }
                         
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-cart"></i> Warenkorb <span class="badge bg-secondary">0</span>
-                            </a>
-                        </li>
+                        @await Component.InvokeAsync("CartBadge")
                     </ul>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Webshop_Berchtold.Data;
+using Webshop_Berchtold.Services;
 
 namespace Webshop_Berchtold
 {
@@ -34,6 +35,18 @@ namespace Webshop_Berchtold
             // Claims Transformation hinzufügen
             builder.Services.AddScoped<Microsoft.AspNetCore.Authentication.IClaimsTransformation, Webshop_Berchtold.Services.UserClaimsTransformation>();
 
+            // ShoppingCart Service registrieren
+            builder.Services.AddScoped<ShoppingCartService>();
+
+            // Session konfigurieren für Warenkorb
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromDays(7); // Session läuft nach 7 Tagen ab
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             var app = builder.Build();
 
             // Admin-Benutzer und Rollen initialisieren
@@ -63,6 +76,9 @@ namespace Webshop_Berchtold
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            // Session muss vor Authentication sein
+            app.UseSession();
             
             app.UseAuthentication();
             app.UseAuthorization();
