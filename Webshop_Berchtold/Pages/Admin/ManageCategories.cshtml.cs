@@ -140,17 +140,21 @@ namespace Webshop_Berchtold.Pages.Admin
                     return RedirectToPage();
                 }
 
-                if (category.Products.Any())
-                {
-                    StatusMessage = $"Kategorie '{category.Name}' kann nicht gelöscht werden, da sie noch Produkte enthält.";
-                    return RedirectToPage();
-                }
+                var productCount = category.Products.Count;
 
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation($"Kategorie '{category.Name}' wurde gelöscht");
-                StatusMessage = $"Kategorie '{category.Name}' wurde erfolgreich gelöscht.";
+                
+                if (productCount > 0)
+                {
+                    StatusMessage = $"Kategorie '{category.Name}' wurde erfolgreich gelöscht. {productCount} Produkt(e) haben nun keine Kategorie mehr.";
+                }
+                else
+                {
+                    StatusMessage = $"Kategorie '{category.Name}' wurde erfolgreich gelöscht.";
+                }
 
                 return RedirectToPage();
             }

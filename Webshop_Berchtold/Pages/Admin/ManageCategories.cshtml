@@ -175,23 +175,13 @@
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
                                                     
-                                                    @if (!category.Products.Any())
-                                                    {
-                                                        <form method="post" asp-page-handler="Delete" asp-route-id="@category.Id" 
-                                                              class="d-inline"
-                                                              onsubmit="return confirm('Kategorie @category.Name wirklich löschen?');">
-                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Löschen">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    }
-                                                    else
-                                                    {
-                                                        <button class="btn btn-sm btn-outline-secondary" disabled 
-                                                                title="Kategorie enthält @category.Products.Count Produkt(e)">
+                                                    <form method="post" asp-page-handler="Delete" asp-route-id="@category.Id" 
+                                                          class="d-inline"
+                                                          onsubmit="return confirm('Kategorie \'@category.Name\' wirklich löschen?@(category.Products.Any() ? $" Dies wird auch {category.Products.Count} Produkt(e) betreffen!" : "")');">
+                                                        <button type="submit" class="btn btn-sm btn-danger" title="Löschen">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
-                                                    }
+                                                    </form>
                                                 </td>
                                             </tr>
                                         }
@@ -201,16 +191,6 @@
                         }
                     </div>
                 </div>
-                
-                @if (Model.Categories.Any(c => c.Products.Any()))
-                {
-                    <div class="alert alert-info mt-3 mb-0">
-                        <small>
-                            <i class="bi bi-info-circle"></i> 
-                            Kategorien mit Produkten können nicht gelöscht werden.
-                        </small>
-                    </div>
-                }
             </div>
         </div>
     </div>
