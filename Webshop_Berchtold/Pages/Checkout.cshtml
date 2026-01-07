@@ -1,0 +1,172 @@
+@page
+@model CheckoutModel
+@{
+    ViewData["Title"] = "Bestellung abschlieﬂen";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="/Index">Startseite</a></li>
+            <li class="breadcrumb-item"><a asp-page="/Cart">Warenkorb</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Bestellung abschlieﬂen</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="bi bi-credit-card"></i> Bestellung abschlieﬂen
+            </h1>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Schlieﬂen"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Bestellformular -->
+        <div class="col-lg-8 mb-4">
+            <form method="post">
+                <!-- Lieferadresse -->
+                <div class="card mb-3">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-truck"></i> Lieferadresse
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Input.LieferAdresse" class="form-label">Straﬂe und Hausnummer *</label>
+                                <input asp-for="Input.LieferAdresse" class="form-control" placeholder="z.B. Hauptstraﬂe 123" required />
+                                <span asp-validation-for="Input.LieferAdresse" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Input.Postleitzahl" class="form-label">Postleitzahl *</label>
+                                <input asp-for="Input.Postleitzahl" class="form-control" placeholder="z.B. 1010" required />
+                                <span asp-validation-for="Input.Postleitzahl" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="Input.Stadt" class="form-label">Stadt *</label>
+                                <input asp-for="Input.Stadt" class="form-control" placeholder="z.B. Wien" required />
+                                <span asp-validation-for="Input.Stadt" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Input.Land" class="form-label">Land *</label>
+                                <select asp-for="Input.Land" class="form-select" required>
+                                    <option value="">Bitte w‰hlen...</option>
+                                    <option value="÷sterreich" selected>÷sterreich</option>
+                                    <option value="Deutschland">Deutschland</option>
+                                    <option value="Schweiz">Schweiz</option>
+                                    <option value="Italien">Italien</option>
+                                    <option value="Slowenien">Slowenien</option>
+                                    <option value="Tschechien">Tschechien</option>
+                                    <option value="Slowakei">Slowakei</option>
+                                    <option value="Ungarn">Ungarn</option>
+                                </select>
+                                <span asp-validation-for="Input.Land" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bestellhinweise (optional) -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-chat-left-text"></i> Bestellhinweise (optional)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Input.Hinweise" class="form-label">Zus‰tzliche Hinweise</label>
+                            <textarea asp-for="Input.Hinweise" class="form-control" rows="3" 
+                                      placeholder="z.B. Lieferung zwischen 9-12 Uhr, Hintere Eingangst¸r verwenden..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a asp-page="/Cart" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left"></i> Zur¸ck zum Warenkorb
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle"></i> Bestellung abschlieﬂen
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bestell¸bersicht -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check"></i> Ihre Bestellung
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CartItems.Any())
+                    {
+                        <div class="order-summary mb-3">
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold">@item.Product.Name</div>
+                                        <small class="text-muted">@item.Anzahl x Ä@item.Product.Preis.ToString("N2")</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <strong>Ä@((item.Anzahl * item.Product.Preis).ToString("N2"))</strong>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="pricing-summary">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Zwischensumme:</span>
+                                <span class="fw-bold">Ä@Model.Zwischensumme.ToString("N2")</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Versandkosten:</span>
+                                <span class="text-success fw-bold">Kostenlos</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                                <span>MwSt. (20%):</span>
+                                <span>Ä@Model.MwSt.ToString("N2")</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5>Gesamt:</h5>
+                                <h5 class="text-success">Ä@Model.Gesamt.ToString("N2")</h5>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-cart-x"></i> Ihr Warenkorb ist leer
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

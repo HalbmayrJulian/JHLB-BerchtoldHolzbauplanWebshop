@@ -38,6 +38,9 @@ namespace Webshop_Berchtold
             // ShoppingCart Service registrieren
             builder.Services.AddScoped<ShoppingCartService>();
 
+            // Invoice PDF Service registrieren
+            builder.Services.AddScoped<InvoicePdfService>();
+
             // Session konfigurieren für Warenkorb
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
