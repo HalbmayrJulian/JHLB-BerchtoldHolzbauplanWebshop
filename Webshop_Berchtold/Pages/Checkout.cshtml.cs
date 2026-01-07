@@ -130,17 +130,6 @@ namespace Webshop_Berchtold.Pages
 
                 await _context.SaveChangesAsync();
 
-                // Lade die vollständige Bestellung mit allen Details für PDF
-                var completeOrder = await _context.Orders
-                    .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Product)
-                    .FirstOrDefaultAsync(o => o.Id == order.Id);
-
-                if (completeOrder == null)
-                {
-                    throw new Exception("Bestellung konnte nicht geladen werden");
-                }
-
                 // Leere den Warenkorb
                 var cartItemsToRemove = await _context.ShoppingCartItems
                     .Where(sci => sci.UserId == user.Id)
@@ -151,15 +140,11 @@ namespace Webshop_Berchtold.Pages
 
                 _logger.LogInformation($"Bestellung #{order.Id} erfolgreich erstellt für Benutzer {user.Email}");
 
-                // Generiere PDF-Rechnung
-                var pdfBytes = _pdfService.GenerateInvoice(completeOrder, user);
+                // Speichere Bestellungs-ID in TempData für automatischen PDF-Download
+                TempData["DownloadInvoiceOrderId"] = order.Id;
 
-                // Speichere Bestellungs-ID in TempData für Erfolgsmeldung
-                TempData["OrderId"] = order.Id;
-                TempData["SuccessMessage"] = $"Ihre Bestellung #{1000 + order.Id} wurde erfolgreich aufgegeben!";
-
-                // Gebe PDF zum Download zurück
-                return File(pdfBytes, "application/pdf", $"Rechnung_{1000 + order.Id}.pdf");
+                // Weiterleitung zur Bestätigungsseite
+                return RedirectToPage("/OrderConfirmation", new { orderId = order.Id });
             }
             catch (Exception ex)
             {

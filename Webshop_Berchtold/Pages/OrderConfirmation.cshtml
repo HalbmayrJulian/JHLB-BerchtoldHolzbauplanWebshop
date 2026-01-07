@@ -1,0 +1,39 @@
+@page "{orderId:int}"
+@model OrderConfirmationModel
+@{
+    ViewData["Title"] = "Bestellung erfolgreich";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <!-- Erfolgs-Card -->
+            <div class="card border-success shadow">
+                <div class="card-body text-center py-5">
+                    <!-- Erfolgs-Icon -->
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h1 class="text-success mb-3">
+                        Bestellung erfolgreich!
+                    </h1>
+                    
+                    <p class="lead mb-4">
+                        Vielen Dank für Ihre Bestellung!
+                    </p>
+                    
+                    <p class="text-muted mb-4">
+                        Ihre Bestellnummer: <strong>#@(1000 + Model.OrderId)</strong>
+                    </p>
+                    
+                    <hr class="my-4" />
+                    
+                    <a asp-page="/Index" class="btn btn-success btn-lg">
+                        <i class="bi bi-cart-plus"></i> Weiter einkaufen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
