@@ -2,12 +2,25 @@
 @model Webshop_Berchtold.Pages.LoginModel
 @{
     ViewData["Title"] = "Anmelden";
+    var returnUrl = Model.ReturnUrl ?? "";
+    var isCheckoutRedirect = returnUrl.Contains("Checkout", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="login-container">
+                @if (isCheckoutRedirect)
+                {
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Anmeldung erforderlich</strong>
+                        <p class="mb-0 mt-2 small">
+                            Um eine Bestellung aufzugeben, müssen Sie angemeldet sein. Bitte melden Sie sich an oder erstellen Sie ein neues Konto.
+                        </p>
+                    </div>
+                }
+                
                 <div class="text-center mb-4">
                     <img src="~/images/logo.png" alt="Berchtold Logo" class="logo mb-3" style="height: 60px;" />
                     <h2 class="h4" style="color: var(--color-dark);">Anmelden</h2>
@@ -52,7 +65,7 @@
                     <div class="text-center">
                         <p class="text-muted">
                             Noch kein Konto? 
-                            <a asp-page="/Register" style="color: var(--color-green);">
+                            <a asp-page="/Register" asp-route-returnUrl="@returnUrl" style="color: var(--color-green);">
                                 Jetzt registrieren
                             </a>
                         </p>
@@ -68,7 +81,7 @@
     
     <script>
     function togglePassword() {
-        var passwordField = document.querySelector('input[asp-for="Input.Password"]');
+        var passwordField = document.querySelector('input[name="Input.Password"]');
         var toggleIcon = document.getElementById('toggleIcon');
         
         if (passwordField.type === 'password') {

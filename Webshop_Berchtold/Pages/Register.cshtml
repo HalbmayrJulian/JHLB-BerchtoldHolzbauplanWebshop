@@ -2,12 +2,25 @@
 @model Webshop_Berchtold.Pages.RegisterModel
 @{
     ViewData["Title"] = "Registrierung";
+    var returnUrl = Model.ReturnUrl ?? "";
+    var isCheckoutRedirect = returnUrl.Contains("Checkout", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="login-container">
+                @if (isCheckoutRedirect)
+                {
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Konto erstellen für Bestellung</strong>
+                        <p class="mb-0 mt-2 small">
+                            Erstellen Sie ein Konto, um Ihre Bestellung abzuschließen. Nach der Registrierung werden Sie automatisch zur Kasse weitergeleitet.
+                        </p>
+                    </div>
+                }
+                
                 <div class="text-center mb-4">
                     <img src="~/images/logo.png" alt="Berchtold Logo" class="logo mb-3" style="height: 60px;" />
                     <h2 class="h4" style="color: var(--color-dark);">Konto erstellen</h2>
@@ -55,7 +68,7 @@
 
                     <div class="text-center mt-3">
                         <p class="small text-muted">
-                            Bereits registriert? <a asp-page="/Login" class="text-decoration-none">Hier anmelden</a>
+                            Bereits registriert? <a asp-page="/Login" asp-route-returnUrl="@returnUrl" class="text-decoration-none">Hier anmelden</a>
                         </p>
                     </div>
                 </form>
