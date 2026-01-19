@@ -27,6 +27,14 @@
                         Ihre Bestellnummer: <strong>#@(1000 + Model.OrderId)</strong>
                     </p>
                     
+                    @if (Model.HasPdfToDownload)
+                    {
+                        <div class="alert alert-info mb-4">
+                            <i class="bi bi-file-pdf"></i>
+                            Ihre Rechnung wird automatisch heruntergeladen...
+                        </div>
+                    }
+                    
                     <hr class="my-4" />
                     
                     <a asp-page="/Index" class="btn btn-success btn-lg">
@@ -37,3 +45,15 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @if (Model.HasPdfToDownload)
+    {
+        <script>
+            // Automatischer Download der Rechnung nach kurzer Verzögerung
+            setTimeout(function() {
+                window.location.href = '@Url.Page("/OrderConfirmation", "DownloadInvoice")';
+            }, 500);
+        </script>
+    }
+}
