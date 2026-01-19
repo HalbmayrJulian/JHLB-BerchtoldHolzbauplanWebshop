@@ -12,34 +12,46 @@
             <div class="product-image-detail">
                 <div class="main-image">
                     <div class="image-placeholder d-flex align-items-center justify-content-center">
-                        <i class="bi bi-wrench" style="font-size: 6rem; color: var(--color-medium-gray);"></i>
+                        @if (!string.IsNullOrEmpty(Model.Product?.BildUrl))
+                        {
+                            <img src="@Model.Product.BildUrl" alt="@Model.Product.Name" class="img-fluid" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                        }
+                        else if (!string.IsNullOrEmpty(Model.Product?.IconClass))
+                        {
+                            <i class="@Model.Product.IconClass" style="font-size: 6rem; color: var(--color-medium-gray);"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-box" style="font-size: 6rem; color: var(--color-medium-gray);"></i>
+                        }
                     </div>
                 </div>
-                <!-- Thumbnail Gallery -->
-                <div class="image-gallery mt-3">
-                    <div class="row g-2">
-                        <div class="col-3">
-                            <div class="thumbnail-image active">
-                                <i class="bi bi-wrench"></i>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="thumbnail-image">
-                                <i class="bi bi-tools"></i>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="thumbnail-image">
-                                <i class="bi bi-gear"></i>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="thumbnail-image">
-                                <i class="bi bi-hammer"></i>
+                <!-- Thumbnail Gallery - Nur anzeigen wenn Bild vorhanden -->
+                @if (!string.IsNullOrEmpty(Model.Product?.BildUrl))
+                {
+                    <div class="image-gallery mt-3">
+                        <div class="row g-2">
+                            <div class="col-3">
+                                <div class="thumbnail-image active" style="cursor: pointer;">
+                                    <img src="@Model.Product.BildUrl" alt="@Model.Product.Name" class="img-fluid" style="max-width: 100%; max-height: 100%; object-fit: cover;" />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <!-- Thumbnail Gallery mit Icons -->
+                    <div class="image-gallery mt-3">
+                        <div class="row g-2">
+                            <div class="col-3">
+                                <div class="thumbnail-image active">
+                                    <i class="@(Model.Product?.IconClass ?? "bi-box")"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
