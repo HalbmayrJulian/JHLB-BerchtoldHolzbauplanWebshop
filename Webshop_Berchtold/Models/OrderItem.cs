@@ -20,10 +20,10 @@ namespace Webshop_Berchtold.Models
 
         // Foreign Keys
         public int OrderId { get; set; }
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; } // Nullable, falls Produkt gelöscht wird
 
         // Navigation Properties
         public virtual Order Order { get; set; } = null!;
-        public virtual Product Product { get; set; } = null!;
+        public virtual Product? Product { get; set; } // Nullable
     }
 }

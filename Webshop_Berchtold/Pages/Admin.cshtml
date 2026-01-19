@@ -30,6 +30,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
+        
+        <!-- Error Message -->
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
         <ul class="nav nav-tabs admin-tabs" id="adminTabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -100,9 +109,13 @@
                                                    class="btn btn-sm btn-warning" title="Bearbeiten">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <button class="btn btn-sm btn-danger" title="Löschen">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                                
+                                                <form method="post" asp-page-handler="DeleteProduct" asp-route-id="@product.Id" 
+                                                      class="d-inline" onsubmit="return confirm('Möchten Sie das Produkt \'@product.Name\' wirklich löschen?');">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Löschen">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>

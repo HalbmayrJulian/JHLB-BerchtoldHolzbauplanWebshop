@@ -71,8 +71,17 @@ namespace Webshop_Berchtold.Pages.Admin
             productToUpdate.Anzahl = Product.Anzahl;
             productToUpdate.Einheit = Product.Einheit;
             productToUpdate.IconClass = Product.IconClass;
-            productToUpdate.IstVerfuegbar = Product.IstVerfuegbar;
             productToUpdate.KategorieId = Product.KategorieId;
+            
+            // Automatisch IstVerfuegbar auf true setzen wenn Anzahl > 0
+            if (Product.Anzahl > 0)
+            {
+                productToUpdate.IstVerfuegbar = true;
+            }
+            else
+            {
+                productToUpdate.IstVerfuegbar = Product.IstVerfuegbar;
+            }
 
             // Bild hochladen wenn vorhanden
             if (BildDatei != null && BildDatei.Length > 0)

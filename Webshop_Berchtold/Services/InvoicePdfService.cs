@@ -143,8 +143,15 @@ namespace Webshop_Berchtold.Services
                             table.Cell().Element(CellStyle).Text(position.ToString()).FontSize(9);
                             table.Cell().Element(CellStyle).Text(text =>
                             {
-                                text.Span(item.Product.Name).FontSize(9);
-                                text.Span($"\n{item.Product.Einheit}").FontSize(7).FontColor(Colors.Grey.Medium);
+                                // Falls Produkt gelöscht wurde, zeige Platzhalter an
+                                var productName = item.Product?.Name ?? "[Produkt gelöscht]";
+                                var productUnit = item.Product?.Einheit ?? "";
+                                
+                                text.Span(productName).FontSize(9);
+                                if (!string.IsNullOrEmpty(productUnit))
+                                {
+                                    text.Span($"\n{productUnit}").FontSize(7).FontColor(Colors.Grey.Medium);
+                                }
                             });
                             table.Cell().Element(CellStyle).AlignRight().Text($"{item.Anzahl}x").FontSize(9);
                             table.Cell().Element(CellStyle).AlignRight().Text($"€{item.EinzelPreis:N2}").FontSize(9);

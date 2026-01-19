@@ -61,10 +61,11 @@ namespace Webshop_Berchtold.Data
                       .HasForeignKey(oi => oi.OrderId)
                       .OnDelete(DeleteBehavior.Cascade);
                 
+                // Ändere zu SetNull statt Restrict, damit Produkte gelöscht werden können
                 entity.HasOne(oi => oi.Product)
                       .WithMany(p => p.OrderItems)
                       .HasForeignKey(oi => oi.ProductId)
-                      .OnDelete(DeleteBehavior.Restrict);
+                      .OnDelete(DeleteBehavior.SetNull);
                 
                 entity.Ignore(e => e.GesamtPreis); // Calculated property
             });

@@ -39,7 +39,7 @@
                     <div class="mb-3">
                         <label asp-for="Input.Password" class="form-label">Passwort</label>
                         <div class="input-group">
-                            <input asp-for="Input.Password" class="form-control" placeholder="Ihr Passwort" autocomplete="current-password">
+                            <input asp-for="Input.Password" class="form-control" placeholder="Ihr Passwort" autocomplete="current-password" id="passwordField">
                             <button class="btn btn-secondary" type="button" onclick="togglePassword()">
                                 <i class="bi bi-eye" id="toggleIcon"></i>
                             </button>
@@ -81,7 +81,7 @@
     
     <script>
     function togglePassword() {
-        var passwordField = document.querySelector('input[name="Input.Password"]');
+        var passwordField = document.getElementById('passwordField');
         var toggleIcon = document.getElementById('toggleIcon');
         
         if (passwordField.type === 'password') {

@@ -50,13 +50,23 @@
 
                     <div class="mb-3">
                         <label asp-for="Input.Password" class="form-label">Passwort</label>
-                        <input asp-for="Input.Password" class="form-control" placeholder="Ihr Passwort" autocomplete="new-password">
+                        <div class="input-group">
+                            <input asp-for="Input.Password" class="form-control" placeholder="Ihr Passwort" autocomplete="new-password" id="passwordField">
+                            <button class="btn btn-secondary" type="button" onclick="togglePassword('passwordField', 'passwordIcon')">
+                                <i class="bi bi-eye" id="passwordIcon"></i>
+                            </button>
+                        </div>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="Input.ConfirmPassword" class="form-label">Passwort bestätigen</label>
-                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Passwort wiederholen" autocomplete="new-password">
+                        <div class="input-group">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Passwort wiederholen" autocomplete="new-password" id="confirmPasswordField">
+                            <button class="btn btn-secondary" type="button" onclick="togglePassword('confirmPasswordField', 'confirmPasswordIcon')">
+                                <i class="bi bi-eye" id="confirmPasswordIcon"></i>
+                            </button>
+                        </div>
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
 
@@ -79,4 +89,19 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-}
+    
+    <script>
+    function togglePassword(fieldId, iconId) {
+        var passwordField = document.getElementById(fieldId);
+        var toggleIcon = document.getElementById(iconId);
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.className = 'bi bi-eye-slash';
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.className = 'bi bi-eye';
+        }
+    }
+    </script>
+}</script>
