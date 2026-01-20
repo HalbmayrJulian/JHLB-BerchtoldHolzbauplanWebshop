@@ -22,7 +22,7 @@
                         }
                         else
                         {
-                            <i class="bi bi-box" style="font-size: 6rem; color: var(--color-medium-gray);"></i>
+                            <i class="bi bi-box" style="font-size: 6rem, color: var(--color-medium-gray);"></i>
                         }
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                                             <i class="bi bi-dash"></i>
                                         </button>
                                         <input type="number" class="form-control text-center" id="quantity" name="quantity" 
-                                               value="1" min="1" max="@Model.Product.Anzahl">
+                                               value="1" min="1" max="@Model.Product.Anzahl" step="1">
                                         <button class="btn btn-outline-secondary quantity-btn" type="button" id="increase-qty">
                                             <i class="bi bi-plus"></i>
                                         </button>
@@ -164,24 +164,69 @@
         const decreaseBtn = document.getElementById('decrease-qty');
         const increaseBtn = document.getElementById('increase-qty');
         
-        // Quantity buttons
-        if (decreaseBtn && quantityInput) {
-            decreaseBtn.addEventListener('click', function() {
-                let val = parseInt(quantityInput.value);
-                if (val > 1) {
-                    quantityInput.value = val - 1;
+        // Verhindere das Standard-Verhalten des Number-Inputs bei den Browser-Pfeilen
+        if (quantityInput) {
+            quantityInput.addEventListener('keydown', function(e) {
+                // Erlaube nur: Backspace, Delete, Tab, Escape, Enter und Zahlen
+                if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                    // Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (e.keyCode === 65 && e.ctrlKey === true) ||
+                    (e.keyCode === 67 && e.ctrlKey === true) ||
+                    (e.keyCode === 86 && e.ctrlKey === true) ||
+                    (e.keyCode === 88 && e.ctrlKey === true) ||
+                    // Home, End, Left, Right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    return;
+                }
+                // Blockiere die Pfeil-Tasten Up/Down
+                if (e.keyCode === 38 || e.keyCode === 40) {
+                    e.preventDefault();
+                    return false;
+                }
+                // Stelle sicher, dass es eine Zahl ist
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
                 }
             });
         }
         
-        if (increaseBtn && quantityInput) {
-            increaseBtn.addEventListener('click', function() {
-                let val = parseInt(quantityInput.value);
-                let max = parseInt(quantityInput.max);
-                if (val < max) {
-                    quantityInput.value = val + 1;
+        // Quantity buttons - komplett neu
+        if (decreaseBtn && quantityInput) {
+            decreaseBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                
+                let currentValue = parseInt(quantityInput.value);
+                if (isNaN(currentValue) || currentValue < 1) {
+                    currentValue = 1;
                 }
-            });
+                
+                if (currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                }
+                
+                return false;
+            }, true);
+        }
+        
+        if (increaseBtn && quantityInput) {
+            increaseBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                
+                let currentValue = parseInt(quantityInput.value);
+                if (isNaN(currentValue) || currentValue < 1) {
+                    currentValue = 1;
+                }
+                
+                let maxValue = parseInt(quantityInput.getAttribute('max'));
+                
+                if (currentValue < maxValue) {
+                    quantityInput.value = currentValue + 1;
+                }
+                
+                return false;
+            }, true);
         }
         
         // Add to cart

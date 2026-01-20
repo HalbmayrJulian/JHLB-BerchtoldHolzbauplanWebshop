@@ -154,12 +154,16 @@ namespace Webshop_Berchtold.Pages
                 // Generiere PDF-Rechnung und gebe sie direkt zum Download zurück
                 var pdfBytes = _pdfService.GenerateInvoice(completeOrder, user);
                 
+                // Speichere PDF in Session für späteren Download
+                HttpContext.Session.SetString("InvoicePdf", Convert.ToBase64String(pdfBytes));
+                HttpContext.Session.SetString("InvoiceFileName", $"Rechnung_{1000 + order.Id}.pdf");
+                
                 // Speichere die Bestellnummer für die Erfolgsmeldung
                 TempData["OrderId"] = order.Id;
                 TempData["SuccessMessage"] = $"Ihre Bestellung #{1000 + order.Id} wurde erfolgreich aufgegeben!";
 
-                // Gebe PDF direkt zum Download zurück
-                return File(pdfBytes, "application/pdf", $"Rechnung_{1000 + order.Id}.pdf");
+                // Leite direkt zur Bestätigungsseite um
+                return RedirectToPage("/OrderConfirmation", new { orderId = order.Id });
             }
             catch (Exception ex)
             {
