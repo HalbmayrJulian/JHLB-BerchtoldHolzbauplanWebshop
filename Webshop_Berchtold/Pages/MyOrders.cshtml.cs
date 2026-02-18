@@ -34,6 +34,15 @@ namespace Webshop_Berchtold.Pages
         [TempData]
         public string? SuccessMessage { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string? StatusFilter { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? SearchQuery { get; set; }
+
+        public int TotalOrders { get; set; }
+        public decimal TotalSpent { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -52,6 +61,8 @@ namespace Webshop_Berchtold.Pages
             return Page();
         }
 
+        // Download-Funktion für Rechnungen - derzeit deaktiviert
+        /*
         public async Task<IActionResult> OnGetDownloadInvoiceAsync(int orderId)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -82,5 +93,6 @@ namespace Webshop_Berchtold.Pages
                 return RedirectToPage();
             }
         }
+        */
     }
 }
