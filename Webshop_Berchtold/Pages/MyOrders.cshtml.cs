@@ -30,18 +30,10 @@ namespace Webshop_Berchtold.Pages
         }
 
         public List<Order> Orders { get; set; } = new();
+        public int TotalOrders { get; set; }
 
         [TempData]
         public string? SuccessMessage { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public string? StatusFilter { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public string? SearchQuery { get; set; }
-
-        public int TotalOrders { get; set; }
-        public decimal TotalSpent { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -57,6 +49,8 @@ namespace Webshop_Berchtold.Pages
                 .Where(o => o.UserId == user.Id)
                 .OrderByDescending(o => o.BestellDatum)
                 .ToListAsync();
+
+            TotalOrders = Orders.Count;
 
             return Page();
         }
