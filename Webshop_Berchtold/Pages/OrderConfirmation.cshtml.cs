@@ -1,48 +1,54 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Webshop_Berchtold.Data;
+using Webshop_Berchtold.Models;
 
 namespace Webshop_Berchtold.Pages
 {
     [Authorize]
     public class OrderConfirmationModel : PageModel
     {
-        public int OrderId { get; set; }
-        public bool HasPdfToDownload { get; set; }
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public IActionResult OnGet(int orderId)
+        public OrderConfirmationModel(ApplicationDbContext context, UserManager<User> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        public int OrderId { get; set; }
+        public string? InvoicePdfPath { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int orderId)
         {
             if (orderId <= 0)
             {
                 return RedirectToPage("/Index");
             }
 
-            OrderId = orderId;
-            
-            // Prüfe, ob ein PDF zum Download verfügbar ist
-            HasPdfToDownload = !string.IsNullOrEmpty(HttpContext.Session.GetString("InvoicePdf"));
-            
-            return Page();
-        }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToPage("/Login");
+            }
 
-        public IActionResult OnGetDownloadInvoice()
-        {
-            var pdfBase64 = HttpContext.Session.GetString("InvoicePdf");
-            var fileName = HttpContext.Session.GetString("InvoiceFileName") ?? "Rechnung.pdf";
+            // Lade Bestellung mit Rechnung
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == user.Id);
 
-            if (string.IsNullOrEmpty(pdfBase64))
+            if (order == null)
             {
                 return RedirectToPage("/Index");
             }
 
-            // Konvertiere Base64 zurück zu Byte-Array
-            var pdfBytes = Convert.FromBase64String(pdfBase64);
+            OrderId = orderId;
+            InvoicePdfPath = order.InvoicePdfPath;
 
-            // Lösche aus Session nach Download
-            HttpContext.Session.Remove("InvoicePdf");
-            HttpContext.Session.Remove("InvoiceFileName");
-
-            return File(pdfBytes, "application/pdf", fileName);
+            return Page();
         }
     }
 }

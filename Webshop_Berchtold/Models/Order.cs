@@ -28,10 +28,13 @@ namespace Webshop_Berchtold.Models
         public string? Postleitzahl { get; set; }
 
         [MaxLength(50)]
-        public string? Land { get; set; }
+            public string? Land { get; set; }
 
-        // Foreign Key
-        public string UserId { get; set; } = string.Empty;
+            [MaxLength(500)]
+            public string? InvoicePdfPath { get; set; }
+
+            // Foreign Key
+            public string UserId { get; set; } = string.Empty;
 
         // Navigation Properties
         public virtual User User { get; set; } = null!;

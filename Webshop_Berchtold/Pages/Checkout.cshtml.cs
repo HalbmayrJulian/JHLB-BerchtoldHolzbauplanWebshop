@@ -151,13 +151,27 @@ namespace Webshop_Berchtold.Pages
 
                 _logger.LogInformation($"Bestellung #{order.Id} erfolgreich erstellt für Benutzer {user.Email}");
 
-                // Generiere PDF-Rechnung und gebe sie direkt zum Download zurück
+                // Generiere und speichere PDF-Rechnung
                 var pdfBytes = _pdfService.GenerateInvoice(completeOrder, user);
-                
-                // Speichere PDF in Session für späteren Download
-                HttpContext.Session.SetString("InvoicePdf", Convert.ToBase64String(pdfBytes));
-                HttpContext.Session.SetString("InvoiceFileName", $"Rechnung_{1000 + order.Id}.pdf");
-                
+
+                // Erstelle Verzeichnis falls nicht vorhanden
+                var invoicesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "invoices");
+                if (!Directory.Exists(invoicesPath))
+                {
+                    Directory.CreateDirectory(invoicesPath);
+                }
+
+                // Speichere PDF-Datei
+                var fileName = $"Rechnung_{1000 + order.Id}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+                var filePath = Path.Combine(invoicesPath, fileName);
+                await System.IO.File.WriteAllBytesAsync(filePath, pdfBytes);
+
+                // Speichere Dateipfad in der Bestellung
+                order.InvoicePdfPath = $"/invoices/{fileName}";
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Rechnung gespeichert: {filePath}");
+
                 // Speichere die Bestellnummer für die Erfolgsmeldung
                 TempData["OrderId"] = order.Id;
                 TempData["SuccessMessage"] = $"Ihre Bestellung #{1000 + order.Id} wurde erfolgreich aufgegeben!";

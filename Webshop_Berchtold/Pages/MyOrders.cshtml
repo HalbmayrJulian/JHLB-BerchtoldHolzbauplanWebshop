@@ -15,11 +15,25 @@
     <div class="row">
         <div class="col-12">
             <h1 class="mb-4">
-                <i class="bi bi-bag"></i> Meine Bestellungen
+                <i class="bi bi-bag"></i> Meine Bestellungen & Rechnungen
             </h1>
             <p class="text-muted">Sie haben insgesamt <strong>@Model.TotalOrders</strong> @(Model.TotalOrders == 1 ? "Bestellung" : "Bestellungen") aufgegeben.</p>
         </div>
     </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="true">
+                <i class="bi bi-bag"></i> Bestellungen
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices" type="button" role="tab" aria-controls="invoices" aria-selected="false">
+                <i class="bi bi-file-earmark-pdf"></i> Rechnungen
+            </button>
+        </li>
+    </ul>
 
     @if (!string.IsNullOrEmpty(Model.SuccessMessage))
     {
@@ -29,106 +43,135 @@
         </div>
     }
 
-    @if (!Model.Orders.Any())
-    {
-        <div class="alert alert-info mt-4">
-            <h4><i class="bi bi-inbox"></i> Noch keine Bestellungen</h4>
-            <p>Sie haben noch keine Bestellungen aufgegeben.</p>
-            <a asp-page="/Index" class="btn btn-primary mt-2">
-                <i class="bi bi-shop"></i> Jetzt einkaufen
-            </a>
-        </div>
-    }
-    else
-    {
-        <div class="row mt-4">
-            @foreach (var order in Model.Orders)
+    <!-- Tab Content -->
+    <div class="tab-content" id="myTabContent">
+        <!-- Bestellungen Tab -->
+        <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+            @if (!Model.Orders.Any())
             {
-                <div class="col-12 mb-3">
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <div class="row align-items-center">
-                                <div class="col-md-4">
-                                    <small class="text-muted">Bestellnummer</small>
-                                    <div class="fw-bold">#@(1000 + order.Id)</div>
+                <div class="alert alert-info mt-4">
+                    <h4><i class="bi bi-inbox"></i> Noch keine Bestellungen</h4>
+                    <p>Sie haben noch keine Bestellungen aufgegeben.</p>
+                    <a asp-page="/Index" class="btn btn-primary mt-2">
+                        <i class="bi bi-shop"></i> Jetzt einkaufen
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var order in Model.Orders)
+                    {
+                        <div class="col-12 mb-3">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Bestellnummer</small>
+                                            <div class="fw-bold">#@(1000 + order.Id)</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Datum</small>
+                                            <div>@order.BestellDatum.ToString("dd.MM.yyyy HH:mm")</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small class="text-muted">Betrag</small>
+                                            <div class="fw-bold text-success">€@order.GesamtBetrag.ToString("N2")</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <small class="text-muted">Datum</small>
-                                    <div>@order.BestellDatum.ToString("dd.MM.yyyy HH:mm")</div>
-                                </div>
-                                <div class="col-md-4">
-                                    <small class="text-muted">Betrag</small>
-                                    <div class="fw-bold text-success">€@order.GesamtBetrag.ToString("N2")</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <!-- Lieferadresse -->
-                            <div class="mb-3">
-                                <small class="text-muted">Lieferadresse:</small>
-                                <div>
-                                    @order.LieferAdresse
-                                    @if (!string.IsNullOrEmpty(order.Postleitzahl) && !string.IsNullOrEmpty(order.Stadt))
-                                    {
-                                        <span>, @order.Postleitzahl @order.Stadt</span>
-                                    }
-                                    @if (!string.IsNullOrEmpty(order.Land))
-                                    {
-                                        <span>, @order.Land</span>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Bestellte Artikel -->
-                            <div class="mb-3">
-                                <small class="text-muted fw-bold">
-                                    Bestellte Artikel (@order.OrderItems.Count @(order.OrderItems.Count == 1 ? "Artikel" : "Artikel")):
-                                </small>
-                                <div class="mt-2">
-                                    @foreach (var item in order.OrderItems)
-                                    {
-                                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                                            <div class="d-flex align-items-center flex-grow-1">
-                                                @if (!string.IsNullOrEmpty(item.Product?.BildUrl))
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <small class="text-muted fw-bold">Lieferadresse</small>
+                                            <div>
+                                                @order.LieferAdresse
+                                                @if (!string.IsNullOrEmpty(order.Postleitzahl) && !string.IsNullOrEmpty(order.Stadt))
                                                 {
-                                                    <img src="@item.Product.BildUrl" alt="@item.Product.Name" 
-                                                         style="width: 50px; height: 50px; object-fit: cover;" class="me-3 rounded" />
+                                                    <span>, @order.Postleitzahl @order.Stadt</span>
                                                 }
-                                                else
+                                                @if (!string.IsNullOrEmpty(order.Land))
                                                 {
-                                                    <i class="@(item.Product?.IconClass ?? "bi-box") me-3" 
-                                                       style="font-size: 2rem; color: var(--color-medium-gray);"></i>
+                                                    <span>, @order.Land</span>
                                                 }
-                                                <div>
-                                                    <div class="fw-bold">@(item.Product?.Name ?? "[Produkt gelöscht]")</div>
-                                                    <small class="text-muted">
-                                                        @item.Anzahl x €@item.EinzelPreis.ToString("N2")
-                                                        @if (!string.IsNullOrEmpty(item.Product?.Einheit))
-                                                        {
-                                                            <span> (@item.Product.Einheit)</span>
-                                                        }
-                                                    </small>
-                                                </div>
-                                            </div>
-                                            <div class="text-end ms-3">
-                                                <strong>€@item.GesamtPreis.ToString("N2")</strong>
                                             </div>
                                         </div>
-                                    }
+                                        <div class="col-md-6 mb-2">
+                                            <small class="text-muted fw-bold">Artikel (@order.OrderItems.Count)</small>
+                                            <div class="mt-1">
+                                                @foreach (var item in order.OrderItems)
+                                                {
+                                                    <div class="small">
+                                                        @item.Anzahl x @(item.Product?.Name ?? "[Produkt gelöscht]")
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <!-- Aktionen -->
-                            <div class="d-flex justify-content-end gap-2">
-                                <a asp-page="/ProductDetail" asp-route-id="@order.OrderItems.First().ProductId" 
-                                   class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-arrow-repeat"></i> Erneut bestellen
-                                </a>
-                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             }
         </div>
-    }
+
+        <!-- Rechnungen Tab -->
+        <div class="tab-pane fade" id="invoices" role="tabpanel" aria-labelledby="invoices-tab">
+            @if (!Model.Orders.Any())
+            {
+                <div class="alert alert-info mt-4">
+                    <h4><i class="bi bi-inbox"></i> Noch keine Rechnungen</h4>
+                    <p>Sie haben noch keine Rechnungen.</p>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var order in Model.Orders.Where(o => !string.IsNullOrEmpty(o.InvoicePdfPath)))
+                    {
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5 class="card-title">Rechnung #@(1000 + order.Id)</h5>
+                                    <p class="card-text text-muted small">
+                                        <i class="bi bi-calendar"></i> @order.BestellDatum.ToString("dd.MM.yyyy HH:mm")<br/>
+                                        <i class="bi bi-currency-euro"></i> €@order.GesamtBetrag.ToString("N2")
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <a href="@order.InvoicePdfPath" target="_blank" class="btn btn-outline-primary btn-sm w-100">
+                                        <i class="bi bi-eye"></i> Rechnung ansehen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (!Model.Orders.Any(o => !string.IsNullOrEmpty(o.InvoicePdfPath)))
+                    {
+                        <div class="col-12">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> Für Ihre Bestellungen wurden noch keine Rechnungen erstellt.
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Aktiviere Rechnungen-Tab, wenn URL #invoices enthält
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash === '#invoices') {
+                var invoicesTab = new bootstrap.Tab(document.getElementById('invoices-tab'));
+                invoicesTab.show();
+            }
+        });
+    </script>
+}
