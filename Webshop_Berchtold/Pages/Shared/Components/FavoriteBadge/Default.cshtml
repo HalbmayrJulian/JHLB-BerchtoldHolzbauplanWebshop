@@ -1,0 +1,14 @@
+@model int
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <li class="nav-item">
+        <a asp-page="/Favorites" class="nav-link position-relative">
+            <i class="bi bi-heart"></i> Favoriten
+            @if (Model > 0)
+            {
+                <span class="badge">@Model</span>
+            }
+        </a>
+    </li>
+}

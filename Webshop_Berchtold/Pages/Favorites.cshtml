@@ -1,0 +1,172 @@
+@page "/Favorites"
+@using Microsoft.AspNetCore.Identity
+@using Webshop_Berchtold.Models
+@inject SignInManager<User> SignInManager
+@model FavoritesModel
+@{
+    ViewData["Title"] = "Meine Favoriten";
+}
+
+<div class="container favorites-container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="page-title mb-4">
+                <i class="bi bi-heart-fill text-danger"></i> Meine Favoriten
+            </h2>
+
+            @if (!string.IsNullOrEmpty(Model.StatusMessage))
+            {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    @Model.StatusMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (Model.OutOfStockProductIds.Any())
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong>Achtung!</strong> Einige Artikel in Ihren Favoriten sind jetzt ausverkauft.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.FavoriteItems.Any())
+    {
+        <div class="row">
+            @foreach (var favorite in Model.FavoriteItems)
+            {
+                var isOutOfStock = favorite.Product == null || !favorite.Product.IstVerfuegbar || favorite.Product.Anzahl == 0;
+                var showOutOfStockBadge = Model.OutOfStockProductIds.Contains(favorite.ProductId);
+
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card product-card h-100">
+                        @if (showOutOfStockBadge)
+                        {
+                            <span class="badge bg-danger position-absolute" style="top: 10px; left: 10px; z-index: 2;">
+                                Ausverkauft
+                            </span>
+                        }
+
+                        <!-- Entfernen Button -->
+                        <button class="btn btn-sm btn-favorite-icon btn-favorite-active btn-remove-favorite" 
+                                data-favorite-id="@favorite.Id" 
+                                title="Aus Favoriten entfernen">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+
+                        @if (favorite.Product != null)
+                        {
+                            var productIcon = !string.IsNullOrEmpty(favorite.Product.IconClass) ? favorite.Product.IconClass : "bi-box";
+                            var productUrl = $"/product/{favorite.Product.Id}";
+
+                            <a href="@productUrl" class="text-decoration-none text-dark">
+                                <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                                    @if (!string.IsNullOrEmpty(favorite.Product.BildUrl))
+                                    {
+                                        <img src="@favorite.Product.BildUrl" alt="@favorite.Product.Name" class="img-fluid" />
+                                    }
+                                    else
+                                    {
+                                        <i class="@productIcon" style="font-size: 3rem; color: var(--color-medium-gray);"></i>
+                                    }
+
+                                    @if (isOutOfStock)
+                                    {
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+                                             style="background-color: rgba(0,0,0,0.5);">
+                                            <span class="text-white fw-bold">AUSVERKAUFT</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@favorite.Product.Name</h5>
+                                    <p class="card-text text-muted small">@favorite.Product.Beschreibung</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="product-price">€@favorite.Product.Preis.ToString("N2")</span>
+                                        <small class="text-muted">@favorite.Product.Einheit</small>
+                                    </div>
+                                    @if (favorite.Product.IstVerfuegbar && favorite.Product.Anzahl > 0)
+                                    {
+                                        <div class="mt-2">
+                                            <small class="text-success">
+                                                <i class="bi bi-check-circle"></i> @favorite.Product.Anzahl Stück verfügbar
+                                            </small>
+                                        </div>
+                                    }
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-heart" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Ihre Favoritenliste ist leer</h4>
+                    <p>Fügen Sie Produkte zu Ihren Favoriten hinzu, um sie später schnell wiederzufinden!</p>
+                    <a asp-page="/Index" class="btn btn-primary mt-3">
+                        <i class="bi bi-shop"></i> Zum Shop
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const removeButtons = document.querySelectorAll('.btn-remove-favorite');
+
+            removeButtons.forEach(button => {
+                button.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const favoriteId = this.getAttribute('data-favorite-id');
+                    const card = this.closest('.col-lg-3');
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('favoriteItemId', favoriteId);
+
+                        const response = await fetch('/Favorites?handler=Remove', {
+                            method: 'POST',
+                            headers: {
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                            },
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            // Entferne die Karte mit Animation
+                            card.style.transition = 'opacity 0.3s, transform 0.3s';
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.8)';
+
+                            setTimeout(() => {
+                                card.remove();
+
+                                // Prüfe ob noch Favoriten vorhanden sind
+                                const remainingCards = document.querySelectorAll('.btn-remove-favorite');
+                                if (remainingCards.length === 0) {
+                                    location.reload();
+                                }
+                            }, 300);
+                        }
+                    } catch (error) {
+                        console.error('Fehler:', error);
+                    }
+                });
+            });
+        });
+    </script>
+}

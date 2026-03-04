@@ -1,4 +1,7 @@
 @page "/product/{id:int}"
+@using Microsoft.AspNetCore.Identity
+@using Webshop_Berchtold.Models
+@inject SignInManager<User> SignInManager
 @model ProductDetailModel
 @{
     ViewData["Title"] = "Produktdetails";
@@ -101,6 +104,7 @@
                     @if (Model.Product.IstVerfuegbar && Model.Product.Anzahl > 0)
                     {
                         <form method="post" id="addToCartForm">
+                            @Html.AntiForgeryToken()
                             <div class="purchase-section">
                                 <!-- Mengenauswahl -->
                                 <div class="quantity-selector mb-3">
@@ -123,9 +127,46 @@
                                         <i class="bi bi-cart-plus"></i>
                                         In den Warenkorb
                                     </button>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <div class="text-center mt-2">
+                                            @if (Model.IsInFavorites)
+                                            {
+                                                <button type="button" class="btn btn-sm btn-link text-muted" disabled>
+                                                    <i class="bi bi-heart-fill text-danger"></i> Bereits in Favoriten
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-sm btn-link text-decoration-none btn-add-favorite-detail" data-product-id="@Model.Product.Id">
+                                                    <i class="bi bi-heart"></i> Zu Favoriten hinzufügen
+                                                </button>
+                                            }
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </form>
+                    }
+                    else
+                    {
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="text-center mt-3">
+                                @if (Model.IsInFavorites)
+                                {
+                                    <button type="button" class="btn btn-sm btn-link text-muted" disabled>
+                                        <i class="bi bi-heart-fill text-danger"></i> Bereits in Favoriten
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-sm btn-link text-decoration-none btn-add-favorite-detail" data-product-id="@Model.Product.Id">
+                                        <i class="bi bi-heart"></i> Zu Favoriten hinzufügen
+                                    </button>
+                                }
+                            </div>
+                        }
                     }
                 }
             </div>
@@ -301,6 +342,57 @@
                     addToCartBtn.innerHTML = originalHtml;
                     addToCartBtn.disabled = false;
                 });
+            });
+        }
+
+        // Favoriten Button Handler
+        const favoriteBtn = document.querySelector('.btn-add-favorite-detail');
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                const productId = this.getAttribute('data-product-id');
+                const originalHtml = this.innerHTML;
+
+                this.disabled = true;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Hinzufügen...';
+
+                try {
+                    // Get Anti-CSRF token
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+                    console.log('Adding product to favorites:', productId);
+
+                    const response = await fetch('/Favorites?handler=AddToFavorites', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token || ''
+                        },
+                        body: JSON.stringify({ productId: parseInt(productId) })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+
+                    const result = await response.json();
+                    console.log('Favorites response:', result);
+
+                    if (result.success) {
+                        this.innerHTML = '<i class="bi bi-heart-fill text-danger"></i> Bereits in Favoriten';
+                        this.classList.remove('btn-add-favorite-detail');
+                        this.classList.add('text-muted');
+                        // Notification entfernt
+                    } else {
+                        this.innerHTML = originalHtml;
+                        this.disabled = false;
+                        console.warn('Favorit konnte nicht hinzugefügt werden:', result.message);
+                    }
+                } catch (error) {
+                    console.error('Fehler:', error);
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                }
             });
         }
     });

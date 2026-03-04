@@ -12,22 +12,26 @@ namespace Webshop_Berchtold.Pages
     {
         private readonly ApplicationDbContext _context;
         private readonly ShoppingCartService _cartService;
+        private readonly FavoritesService _favoritesService;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
         public ProductDetailModel(
             ApplicationDbContext context,
             ShoppingCartService cartService,
+            FavoritesService favoritesService,
             UserManager<User> userManager,
             SignInManager<User> signInManager)
         {
             _context = context;
             _cartService = cartService;
+            _favoritesService = favoritesService;
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
         public Product? Product { get; set; }
+        public bool IsInFavorites { get; set; } = false;
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -38,6 +42,16 @@ namespace Webshop_Berchtold.Pages
             if (Product == null)
             {
                 return NotFound();
+            }
+
+            // Prüfe ob Produkt bereits in Favoriten ist
+            if (_signInManager.IsSignedIn(User))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    IsInFavorites = await _favoritesService.IsProductInFavoritesAsync(user.Id, id);
+                }
             }
 
             return Page();
