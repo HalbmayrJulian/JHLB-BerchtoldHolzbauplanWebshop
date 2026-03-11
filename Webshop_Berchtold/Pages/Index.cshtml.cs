@@ -13,6 +13,7 @@ namespace Webshop_Berchtold.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly ApplicationDbContext _context;
         private readonly FavoritesService _favoritesService;
+        private readonly CompareService _compareService;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
@@ -20,12 +21,14 @@ namespace Webshop_Berchtold.Pages
             ILogger<IndexModel> logger, 
             ApplicationDbContext context,
             FavoritesService favoritesService,
+            CompareService compareService,
             UserManager<User> userManager,
             SignInManager<User> signInManager)
         {
             _logger = logger;
             _context = context;
             _favoritesService = favoritesService;
+            _compareService = compareService;
             _userManager = userManager;
             _signInManager = signInManager;
         }
@@ -33,6 +36,7 @@ namespace Webshop_Berchtold.Pages
         public List<Category> Categories { get; set; } = new();
         public Dictionary<int, List<Product>> ProductsByCategory { get; set; } = new();
         public HashSet<int> FavoriteProductIds { get; set; } = new();
+        public HashSet<int> CompareProductIds { get; set; } = new();
 
         public async Task OnGetAsync()
         {
@@ -63,6 +67,9 @@ namespace Webshop_Berchtold.Pages
                 {
                     var favorites = await _favoritesService.GetFavoriteItemsAsync(user.Id);
                     FavoriteProductIds = favorites.Select(f => f.ProductId).ToHashSet();
+
+                    var compareItems = await _compareService.GetCompareItemsAsync(user.Id);
+                    CompareProductIds = compareItems.Select(c => c.ProductId).ToHashSet();
                 }
             }
         }

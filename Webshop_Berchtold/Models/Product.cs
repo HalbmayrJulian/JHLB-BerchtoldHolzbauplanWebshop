@@ -43,5 +43,6 @@ namespace Webshop_Berchtold.Models
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();
         public virtual ICollection<FavoriteItem> FavoriteItems { get; set; } = new List<FavoriteItem>();
+        public virtual ICollection<CompareItem> CompareItems { get; set; } = new List<CompareItem>();
     }
 }

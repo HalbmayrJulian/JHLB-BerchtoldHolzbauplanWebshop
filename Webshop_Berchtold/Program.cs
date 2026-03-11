@@ -41,6 +41,9 @@ namespace Webshop_Berchtold
             // Favorites Service registrieren
             builder.Services.AddScoped<FavoritesService>();
 
+            // Compare Service registrieren
+            builder.Services.AddScoped<CompareService>();
+
             // Invoice PDF Service registrieren
             builder.Services.AddScoped<InvoicePdfService>();
 

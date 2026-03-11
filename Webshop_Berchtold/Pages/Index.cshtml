@@ -88,18 +88,35 @@
                                 @if (SignInManager.IsSignedIn(User))
                                 {
                                     var isInFavorites = Model.FavoriteProductIds.Contains(product.Id);
-                                    @if (isInFavorites)
-                                    {
-                                        <button class="btn btn-sm btn-favorite-icon btn-favorite-active" data-product-id="@product.Id" title="Aus Favoriten entfernen">
-                                            <i class="bi bi-heart-fill"></i>
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-sm btn-favorite-icon btn-add-favorite" data-product-id="@product.Id" title="Zu Favoriten hinzufügen">
-                                            <i class="bi bi-heart"></i>
-                                        </button>
-                                    }
+                                    var isInCompare = Model.CompareProductIds.Contains(product.Id);
+
+                                    <div class="product-icon-buttons">
+                                        @if (isInCompare)
+                                        {
+                                            <button class="btn btn-sm btn-compare-icon btn-compare-active" data-product-id="@product.Id" title="Aus Vergleich entfernen">
+                                                <i class="bi bi-clipboard-check-fill"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-compare-icon btn-add-compare" data-product-id="@product.Id" title="Zum Vergleich hinzufügen">
+                                                <i class="bi bi-clipboard-check"></i>
+                                            </button>
+                                        }
+
+                                        @if (isInFavorites)
+                                        {
+                                            <button class="btn btn-sm btn-favorite-icon btn-favorite-active" data-product-id="@product.Id" title="Aus Favoriten entfernen">
+                                                <i class="bi bi-heart-fill"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-favorite-icon btn-add-favorite" data-product-id="@product.Id" title="Zu Favoriten hinzufügen">
+                                                <i class="bi bi-heart"></i>
+                                            </button>
+                                        }
+                                    </div>
                                 }
                                 <a href="@productUrl" class="text-decoration-none text-dark">
                                     <div class="product-image bg-light d-flex align-items-center justify-content-center">
@@ -197,6 +214,78 @@
                         }
                     } catch (error) {
                         console.error('Fehler:', error);
+                    }
+                });
+            });
+
+            // Compare Button Handler
+            const compareButtons = document.querySelectorAll('.btn-add-compare, .btn-compare-active');
+
+            compareButtons.forEach(button => {
+                button.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const productId = this.getAttribute('data-product-id');
+                    const icon = this.querySelector('i');
+                    const isActive = this.classList.contains('btn-compare-active');
+
+                    try {
+                        let response;
+
+                        if (isActive) {
+                            // Entfernen aus Vergleich
+                            response = await fetch('/Compare?handler=RemoveByProductId', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                                },
+                                body: JSON.stringify({ productId: parseInt(productId) })
+                            });
+                        } else {
+                            // Hinzufügen zum Vergleich
+                            response = await fetch('/Compare?handler=AddToCompare', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                                },
+                                body: JSON.stringify({ productId: parseInt(productId) })
+                            });
+                        }
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Toggle visuellen Status
+                            if (isActive) {
+                                // Wurde entfernt
+                                icon.classList.remove('bi-clipboard-check-fill');
+                                icon.classList.add('bi-clipboard-check');
+                                this.classList.remove('btn-compare-active');
+                                this.classList.add('btn-add-compare');
+                                this.title = 'Zum Vergleich hinzufügen';
+                            } else {
+                                // Wurde hinzugefügt
+                                icon.classList.remove('bi-clipboard-check');
+                                icon.classList.add('bi-clipboard-check-fill');
+                                this.classList.remove('btn-add-compare');
+                                this.classList.add('btn-compare-active');
+                                this.title = 'Aus Vergleich entfernen';
+                            }
+
+                            // Optional: Show toast notification
+                            if (!isActive && result.message) {
+                                // You can add a toast notification here if desired
+                                console.log(result.message);
+                            }
+                        } else {
+                            alert(result.message || 'Fehler beim Ändern des Vergleichs');
+                        }
+                    } catch (error) {
+                        console.error('Fehler:', error);
+                        alert('Ein Fehler ist aufgetreten');
                     }
                 });
             });

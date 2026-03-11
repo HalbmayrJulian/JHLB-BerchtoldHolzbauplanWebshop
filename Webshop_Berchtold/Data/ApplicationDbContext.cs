@@ -17,6 +17,7 @@ namespace Webshop_Berchtold.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
         public DbSet<FavoriteItem> FavoriteItems { get; set; }
+        public DbSet<CompareItem> CompareItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -106,6 +107,25 @@ namespace Webshop_Berchtold.Data
                       .OnDelete(DeleteBehavior.Cascade);
 
                 // Ein Produkt kann nur einmal pro User in den Favoriten sein
+                entity.HasIndex(e => new { e.UserId, e.ProductId }).IsUnique();
+            });
+
+            // CompareItem Konfiguration
+            modelBuilder.Entity<CompareItem>(entity =>
+            {
+                entity.Property(e => e.HinzugefuegtAm).HasDefaultValueSql("datetime('now')");
+
+                entity.HasOne(ci => ci.User)
+                      .WithMany(u => u.CompareItems)
+                      .HasForeignKey(ci => ci.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ci => ci.Product)
+                      .WithMany(p => p.CompareItems)
+                      .HasForeignKey(ci => ci.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Ein Produkt kann nur einmal pro User in der Vergleichsliste sein
                 entity.HasIndex(e => new { e.UserId, e.ProductId }).IsUnique();
             });
 

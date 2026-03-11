@@ -1,0 +1,248 @@
+@page
+@model Webshop_Berchtold.Pages.CompareModel
+@{
+    ViewData["Title"] = "Produktvergleich";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5">
+            <i class="bi bi-clipboard-check text-info"></i>
+            Produktvergleich
+        </h1>
+        
+        @if (Model.CompareItems.Any())
+        {
+            <form method="post" asp-page-handler="Clear" onsubmit="return confirm('Möchten Sie die Vergleichsliste wirklich leeren?');">
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                    Vergleichsliste leeren
+                </button>
+            </form>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.CompareItems.Any())
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="bi bi-clipboard-x display-1 d-block mb-3"></i>
+            <h4>Ihre Vergleichsliste ist leer</h4>
+            <p class="mb-4">Fügen Sie Produkte aus derselben Kategorie hinzu, um sie zu vergleichen.</p>
+            <a asp-page="/Index" class="btn btn-primary">
+                <i class="bi bi-shop"></i>
+                Produkte ansehen
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            Sie können bis zu 4 Produkte aus derselben Kategorie vergleichen.
+        </div>
+
+        @* Vergleichstabelle für größere Bildschirme *@
+        <div class="table-responsive d-none d-lg-block">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 20%;">Eigenschaft</th>
+                        @foreach (var item in Model.CompareItems)
+                        {
+                            <th class="text-center">
+                                @if (item.Product?.BildUrl != null)
+                                {
+                                    <img src="@item.Product.BildUrl" alt="@item.Product.Name" class="img-fluid mb-2" style="max-height: 150px;">
+                                }
+                                else
+                                {
+                                    <div class="bg-light d-flex align-items-center justify-content-center mb-2" style="height: 150px;">
+                                        <i class="bi @(item.Product?.IconClass ?? "bi-box") display-4 text-muted"></i>
+                                    </div>
+                                }
+                                <h5 class="mb-0">@item.Product?.Name</h5>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold">Kategorie</td>
+                        @foreach (var item in Model.CompareItems)
+                        {
+                            <td class="text-center">
+                                <span class="badge bg-secondary">@item.Product?.Kategorie?.Name</span>
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Beschreibung</td>
+                        @foreach (var item in Model.CompareItems)
+                        {
+                            <td>@item.Product?.Beschreibung</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Preis</td>
+                        @foreach (var item in Model.CompareItems)
+                        {
+                            <td class="text-center">
+                                <span class="fs-4 text-success fw-bold">€@item.Product?.Preis.ToString("N2")</span>
+                                <br>
+                                <small class="text-muted">@item.Product?.Einheit</small>
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Verfügbarkeit</td>
+                        @foreach (var item in Model.CompareItems)
+                        {
+                            <td class="text-center">
+                                @if (item.Product?.IstVerfuegbar == true && item.Product?.Anzahl > 0)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Auf Lager (@item.Product.Anzahl verfügbar)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Nicht verfügbar
+                                    </span>
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Aktionen</td>
+                        @foreach (var item in Model.CompareItems)
+                        {
+                            <td class="text-center">
+                                <div class="d-grid gap-2">
+                                    @if (item.Product?.IstVerfuegbar == true && item.Product?.Anzahl > 0)
+                                    {
+                                        <form method="post" asp-page-handler="AddToCart" asp-route-productId="@item.ProductId">
+                                            <button type="submit" class="btn btn-success btn-sm w-100">
+                                                <i class="bi bi-cart-plus"></i> In den Warenkorb
+                                            </button>
+                                        </form>
+                                    }
+                                    
+                                    <a asp-page="/ProductDetail" asp-route-id="@item.ProductId" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> Details
+                                    </a>
+                                    
+                                    <form method="post" asp-page-handler="AddToFavorites" asp-route-productId="@item.ProductId">
+                                        <button type="submit" class="btn btn-outline-warning btn-sm w-100">
+                                            <i class="bi bi-heart"></i> Zu Favoriten
+                                        </button>
+                                    </form>
+                                    
+                                    <form method="post" asp-page-handler="Remove" asp-route-compareItemId="@item.Id">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                                            <i class="bi bi-x-circle"></i> Entfernen
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @* Card-Layout für mobile Geräte *@
+        <div class="d-lg-none">
+            @foreach (var item in Model.CompareItems)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            @if (item.Product?.BildUrl != null)
+                            {
+                                <img src="@item.Product.BildUrl" alt="@item.Product.Name" class="img-fluid" style="max-height: 200px;">
+                            }
+                            else
+                            {
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <i class="bi @(item.Product?.IconClass ?? "bi-box") display-3 text-muted"></i>
+                                </div>
+                            }
+                        </div>
+                        
+                        <h5 class="card-title">@item.Product?.Name</h5>
+                        <p class="card-text">
+                            <strong>Kategorie:</strong> 
+                            <span class="badge bg-secondary">@item.Product?.Kategorie?.Name</span>
+                        </p>
+                        <p class="card-text">@item.Product?.Beschreibung</p>
+                        
+                        <div class="mb-3">
+                            <span class="fs-4 text-success fw-bold">€@item.Product?.Preis.ToString("N2")</span>
+                            <br>
+                            <small class="text-muted">@item.Product?.Einheit</small>
+                        </div>
+                        
+                        <p class="card-text">
+                            @if (item.Product?.IstVerfuegbar == true && item.Product?.Anzahl > 0)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i> Auf Lager (@item.Product.Anzahl verfügbar)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-x-circle"></i> Nicht verfügbar
+                                </span>
+                            }
+                        </p>
+                        
+                        <div class="d-grid gap-2">
+                            @if (item.Product?.IstVerfuegbar == true && item.Product?.Anzahl > 0)
+                            {
+                                <form method="post" asp-page-handler="AddToCart" asp-route-productId="@item.ProductId">
+                                    <button type="submit" class="btn btn-success w-100">
+                                        <i class="bi bi-cart-plus"></i> In den Warenkorb
+                                    </button>
+                                </form>
+                            }
+                            
+                            <a asp-page="/ProductDetail" asp-route-id="@item.ProductId" class="btn btn-outline-primary">
+                                <i class="bi bi-eye"></i> Details anzeigen
+                            </a>
+                            
+                            <form method="post" asp-page-handler="AddToFavorites" asp-route-productId="@item.ProductId">
+                                <button type="submit" class="btn btn-outline-warning w-100">
+                                    <i class="bi bi-heart"></i> Zu Favoriten hinzufügen
+                                </button>
+                            </form>
+                            
+                            <form method="post" asp-page-handler="Remove" asp-route-compareItemId="@item.Id">
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-x-circle"></i> Aus Vergleich entfernen
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

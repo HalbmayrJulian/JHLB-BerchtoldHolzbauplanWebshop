@@ -1628,11 +1628,18 @@ body > .container {
    FAVORITEN STYLES
    ======================================== */
 
-.btn-favorite-icon {
+/* Product Card Icon Container */
+.product-icon-buttons {
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+/* Favorite Button Styling */
+.btn-favorite-icon {
   background-color: rgba(255, 255, 255, 0.95);
   border: 2px solid var(--color-light-gray);
   border-radius: 50%;
@@ -1681,6 +1688,58 @@ body > .container {
 
 .btn-favorite-icon.btn-favorite-active:hover i {
   color: #dc3545;
+}
+
+/* Compare Button Styling */
+.btn-compare-icon {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--color-light-gray);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-compare-icon i {
+  font-size: 1.2rem;
+  color: #17a2b8;
+  transition: all 0.3s ease;
+}
+
+.btn-compare-icon:hover {
+  transform: scale(1.1);
+  background-color: #fff;
+  border-color: #17a2b8;
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.btn-compare-icon:hover i {
+  transform: scale(1.1);
+}
+
+.btn-compare-icon.btn-compare-active {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: #17a2b8;
+  cursor: pointer;
+}
+
+.btn-compare-icon.btn-compare-active i {
+  color: #17a2b8;
+}
+
+.btn-compare-icon.btn-compare-active:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.btn-compare-icon.btn-compare-active:hover i {
+  color: #17a2b8;
 }
 
 /* Entfernen-Button auf Favoritenseite */
@@ -1834,4 +1893,24 @@ body > .container {
 
 .navbar .nav-link {
   position: relative;
+}
+
+/* Responsive Adjustments for Icon Buttons */
+@media (max-width: 767px) {
+  .product-icon-buttons {
+    top: 8px;
+    right: 8px;
+    gap: 6px;
+  }
+
+  .btn-favorite-icon,
+  .btn-compare-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-favorite-icon i,
+  .btn-compare-icon i {
+    font-size: 1.1rem;
+  }
 }
