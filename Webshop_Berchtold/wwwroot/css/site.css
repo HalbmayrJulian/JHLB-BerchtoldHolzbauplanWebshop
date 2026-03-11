@@ -1708,15 +1708,15 @@ body > .container {
 
 .btn-compare-icon i {
   font-size: 1.2rem;
-  color: #17a2b8;
+  color: #6c757d;
   transition: all 0.3s ease;
 }
 
 .btn-compare-icon:hover {
   transform: scale(1.1);
   background-color: #fff;
-  border-color: #17a2b8;
-  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+  border-color: #6c757d;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
 }
 
 .btn-compare-icon:hover i {
@@ -1725,21 +1725,21 @@ body > .container {
 
 .btn-compare-icon.btn-compare-active {
   background-color: rgba(255, 255, 255, 0.95);
-  border-color: #17a2b8;
+  border-color: #6c757d;
   cursor: pointer;
 }
 
 .btn-compare-icon.btn-compare-active i {
-  color: #17a2b8;
+  color: #6c757d;
 }
 
 .btn-compare-icon.btn-compare-active:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
 }
 
 .btn-compare-icon.btn-compare-active:hover i {
-  color: #17a2b8;
+  color: #6c757d;
 }
 
 /* Entfernen-Button auf Favoritenseite */
@@ -1913,4 +1913,22 @@ body > .container {
   .btn-compare-icon i {
     font-size: 1.1rem;
   }
+}
+
+/* ========================================
+   COMPARE PAGE STYLES
+   ======================================== */
+
+/* Professional styling for compare page */
+.alert-light {
+  background-color: #f8f9fa;
+  color: var(--color-dark);
+}
+
+.alert-light.border {
+  border-color: var(--color-light-gray) !important;
+}
+
+.text-secondary {
+  color: #6c757d !important;
 }

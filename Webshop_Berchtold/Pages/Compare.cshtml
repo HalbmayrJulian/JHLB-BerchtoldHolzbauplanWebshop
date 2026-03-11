@@ -7,10 +7,10 @@
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-5">
-            <i class="bi bi-clipboard-check text-info"></i>
+            <i class="bi bi-clipboard-check text-secondary"></i>
             Produktvergleich
         </h1>
-        
+
         @if (Model.CompareItems.Any())
         {
             <form method="post" asp-page-handler="Clear" onsubmit="return confirm('Möchten Sie die Vergleichsliste wirklich leeren?');">
@@ -40,10 +40,10 @@
 
     @if (!Model.CompareItems.Any())
     {
-        <div class="alert alert-info text-center py-5">
-            <i class="bi bi-clipboard-x display-1 d-block mb-3"></i>
-            <h4>Ihre Vergleichsliste ist leer</h4>
-            <p class="mb-4">Fügen Sie Produkte aus derselben Kategorie hinzu, um sie zu vergleichen.</p>
+        <div class="alert alert-light border text-center py-5">
+            <i class="bi bi-clipboard-x display-1 d-block mb-3 text-muted"></i>
+            <h4 class="text-dark">Ihre Vergleichsliste ist leer</h4>
+            <p class="mb-4 text-muted">Fügen Sie Produkte aus derselben Kategorie hinzu, um sie zu vergleichen.</p>
             <a asp-page="/Index" class="btn btn-primary">
                 <i class="bi bi-shop"></i>
                 Produkte ansehen
@@ -52,9 +52,9 @@
     }
     else
     {
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i>
-            Sie können bis zu 4 Produkte aus derselben Kategorie vergleichen.
+        <div class="alert alert-light border">
+            <i class="bi bi-info-circle text-secondary"></i>
+            <strong>Hinweis:</strong> Sie können bis zu 4 Produkte aus derselben Kategorie vergleichen.
         </div>
 
         @* Vergleichstabelle für größere Bildschirme *@
