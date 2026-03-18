@@ -17,6 +17,7 @@ namespace Webshop_Berchtold.Pages.Admin
         }
 
         public List<ProductSalesStatistic> TopProducts { get; set; } = new();
+        public List<RecentProduct> RecentProducts { get; set; } = new();
         public string SelectedPeriod { get; set; } = "all";
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
@@ -49,12 +50,12 @@ namespace Webshop_Berchtold.Pages.Admin
 
             ToDate = DateTime.Now;
 
-            // Hole nur abgeschlossene und bezahlte Bestellungen
+            // Hole ALLE Bestellungen (unabhängig vom Status)
             var ordersQuery = _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .ThenInclude(p => p.Kategorie)
-                .Where(o => o.Status == "Abgeschlossen" || o.Status == "Versendet" || o.Status == "Bezahlt");
+                .AsQueryable();
 
             if (FromDate.HasValue)
             {
@@ -70,7 +71,7 @@ namespace Webshop_Berchtold.Pages.Admin
             // Gruppiere nach Produkt und berechne Verkaufsstatistiken
             TopProducts = orders
                 .SelectMany(o => o.OrderItems)
-                .Where(oi => oi.Product != null && oi.ProductId.HasValue) // Nur Items mit gültigem Produkt
+                .Where(oi => oi.Product != null && oi.ProductId.HasValue)
                 .GroupBy(oi => new
                 {
                     ProductId = oi.ProductId!.Value,
@@ -92,6 +93,25 @@ namespace Webshop_Berchtold.Pages.Admin
                     Unit = g.Key.Unit
                 })
                 .OrderByDescending(p => p.TotalQuantitySold)
+                .ToList();
+
+            // Lade die letzten 10 verkauften Artikel
+            RecentProducts = orders
+                .SelectMany(o => o.OrderItems.Select(oi => new { Order = o, OrderItem = oi }))
+                .Where(x => x.OrderItem.Product != null)
+                .OrderByDescending(x => x.Order.BestellDatum)
+                .Take(10)
+                .Select(x => new RecentProduct
+                {
+                    ProductId = x.OrderItem.ProductId ?? 0,
+                    ProductName = x.OrderItem.Product!.Name,
+                    CategoryName = x.OrderItem.Product.Kategorie?.Name ?? "Keine Kategorie",
+                    Quantity = x.OrderItem.Anzahl,
+                    Price = x.OrderItem.EinzelPreis,
+                    TotalPrice = x.OrderItem.GesamtPreis,
+                    OrderDate = x.Order.BestellDatum,
+                    Unit = x.OrderItem.Product.Einheit
+                })
                 .ToList();
         }
 
@@ -128,6 +148,18 @@ namespace Webshop_Berchtold.Pages.Admin
                     return "success";
                 }
             }
+        }
+
+        public class RecentProduct
+        {
+            public int ProductId { get; set; }
+            public string ProductName { get; set; } = string.Empty;
+            public string CategoryName { get; set; } = string.Empty;
+            public int Quantity { get; set; }
+            public decimal Price { get; set; }
+            public decimal TotalPrice { get; set; }
+            public DateTime OrderDate { get; set; }
+            public string Unit { get; set; } = string.Empty;
         }
     }
 }

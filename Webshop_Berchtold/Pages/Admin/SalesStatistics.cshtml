@@ -62,7 +62,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-muted">Gesamtumsatz</h6>
-                        <h2 class="card-title mb-0 text-success">€@Model.TotalRevenue.ToString("N2")</h2>
+                        <h2 class="card-title mb-0">€@Model.TotalRevenue.ToString("N2")</h2>
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            <span class="badge @(rank <= 3 ? "bg-warning" : "bg-secondary")">
+                                            <span class="badge bg-secondary">
                                                 #@rank
                                             </span>
                                         </td>
@@ -128,13 +128,13 @@
                                             <small class="text-muted">@product.Unit</small>
                                         </td>
                                         <td>
-                                            <span class="badge bg-light text-dark">@product.CategoryName</span>
+                                            <span class="badge bg-secondary" style="background-color: #6c757d;">@product.CategoryName</span>
                                         </td>
                                         <td class="text-end">
                                             <strong>@product.TotalQuantitySold</strong>
                                         </td>
                                         <td class="text-end">
-                                            <strong class="text-success">€@product.TotalRevenue.ToString("N2")</strong>
+                                            <strong>€@product.TotalRevenue.ToString("N2")</strong>
                                         </td>
                                         <td class="text-end">
                                             €@product.AveragePrice.ToString("N2")
@@ -143,18 +143,16 @@
                                             @product.OrderCount
                                         </td>
                                         <td class="text-end">
-                                            <strong class="@($"text-{product.StockStatusColor}")">
-                                                @product.CurrentStock
-                                            </strong>
+                                            <strong>@product.CurrentStock</strong>
                                         </td>
                                         <td>
-                                            <span class="badge bg-@product.StockStatusColor">
+                                            <span class="badge bg-secondary">
                                                 @product.StockStatus
                                             </span>
                                         </td>
                                         <td>
                                             <a asp-page="/Admin/EditProduct" asp-route-id="@product.ProductId" 
-                                               class="btn btn-sm btn-outline-primary" title="Produkt bearbeiten">
+                                               class="btn btn-sm btn-outline-secondary" title="Produkt bearbeiten">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                         </td>
@@ -168,33 +166,75 @@
             </div>
         </div>
 
-        <!-- Hinweise und Empfehlungen -->
-        @if (Model.TopProducts.Any(p => p.CurrentStock < 30))
-        {
-            <div class="card mt-4 border-warning">
-                <div class="card-header bg-warning bg-opacity-10">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle text-warning"></i>
-                        Lagerbestand-Warnungen
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="mb-2">
-                        <strong>Folgende beliebte Produkte haben einen niedrigen Lagerbestand:</strong>
-                    </p>
-                    <ul class="mb-0">
-                        @foreach (var product in Model.TopProducts.Where(p => p.CurrentStock < 30).Take(5))
-                        {
-                            <li>
-                                <strong>@product.ProductName</strong> - 
-                                Nur noch <span class="text-danger">@product.CurrentStock</span> auf Lager 
-                                (@product.TotalQuantitySold in @Model.SelectedPeriod verkauft)
-                            </li>
-                        }
-                    </ul>
-                </div>
+        <!-- Letzten Artikel Tabelle -->
+        <div class="card mt-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history"></i>
+                    Zuletzt verkaufte Artikel
+                </h5>
             </div>
-        }
+            <div class="card-body p-0">
+                @if (!Model.RecentProducts.Any())
+                {
+                    <div class="alert alert-info m-3">
+                        <i class="bi bi-info-circle"></i>
+                        Keine Verkaufsdaten für den ausgewählten Zeitraum verfügbar.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produkt</th>
+                                    <th>Kategorie</th>
+                                    <th class="text-end">Menge</th>
+                                    <th class="text-end">Einzelpreis</th>
+                                    <th class="text-end">Gesamtpreis</th>
+                                    <th>Bestelldatum</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model.RecentProducts)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@product.ProductName</strong>
+                                            <br>
+                                            <small class="text-muted">@product.Unit</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary" style="background-color: #6c757d;">@product.CategoryName</span>
+                                        </td>
+                                        <td class="text-end">
+                                            @product.Quantity
+                                        </td>
+                                        <td class="text-end">
+                                            €@product.Price.ToString("N2")
+                                        </td>
+                                        <td class="text-end">
+                                            <strong>€@product.TotalPrice.ToString("N2")</strong>
+                                        </td>
+                                        <td>
+                                            <small>@product.OrderDate.ToString("dd.MM.yyyy HH:mm")</small>
+                                        </td>
+                                        <td>
+                                            <a asp-page="/Admin/EditProduct" asp-route-id="@product.ProductId" 
+                                               class="btn btn-sm btn-outline-secondary" title="Produkt bearbeiten">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
 
         <!-- Zurück Button -->
         <div class="mt-4">
