@@ -35,6 +35,7 @@ namespace Webshop_Berchtold.Pages
 
         public List<Category> Categories { get; set; } = new();
         public Dictionary<int, List<Product>> ProductsByCategory { get; set; } = new();
+        public List<BestsellerRecommendation> BestsellerProducts { get; set; } = new();
         public HashSet<int> FavoriteProductIds { get; set; } = new();
         public HashSet<int> CompareProductIds { get; set; } = new();
 
@@ -59,6 +60,37 @@ namespace Webshop_Berchtold.Pages
                 .GroupBy(p => p.KategorieId!.Value)
                 .ToDictionary(g => g.Key, g => g.ToList());
 
+            // Lade Top 3 Bestseller basierend auf verkaufter Menge
+            var bestsellerRanking = await _context.OrderItems
+                .Where(oi => oi.ProductId.HasValue && oi.Product != null && oi.Product.IstVerfuegbar)
+                .GroupBy(oi => oi.ProductId!.Value)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    SoldQuantity = g.Sum(oi => oi.Anzahl)
+                })
+                .OrderByDescending(x => x.SoldQuantity)
+                .ThenBy(x => x.ProductId)
+                .Take(3)
+                .ToListAsync();
+
+            if (bestsellerRanking.Any())
+            {
+                var bestsellerIds = bestsellerRanking.Select(x => x.ProductId).ToList();
+                var bestsellerProducts = await _context.Products
+                    .Where(p => bestsellerIds.Contains(p.Id) && p.IstVerfuegbar)
+                    .ToDictionaryAsync(p => p.Id);
+
+                BestsellerProducts = bestsellerRanking
+                    .Where(x => bestsellerProducts.ContainsKey(x.ProductId))
+                    .Select(x => new BestsellerRecommendation
+                    {
+                        Product = bestsellerProducts[x.ProductId],
+                        SoldQuantity = x.SoldQuantity
+                    })
+                    .ToList();
+            }
+
             // Lade Favoriten IDs für den angemeldeten Benutzer
             if (_signInManager.IsSignedIn(User))
             {
@@ -72,6 +104,12 @@ namespace Webshop_Berchtold.Pages
                     CompareProductIds = compareItems.Select(c => c.ProductId).ToHashSet();
                 }
             }
+        }
+
+        public class BestsellerRecommendation
+        {
+            public Product Product { get; set; } = null!;
+            public int SoldQuantity { get; set; }
         }
     }
 }
