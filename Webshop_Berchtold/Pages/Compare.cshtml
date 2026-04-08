@@ -13,34 +13,30 @@
 
         @if (Model.CompareItems.Any())
         {
-            <form method="post" asp-page-handler="Clear" onsubmit="return confirm('Möchten Sie die Vergleichsliste wirklich leeren?');">
-                <button type="submit" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i>
-                    Vergleichsliste leeren
-                </button>
-            </form>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#clearCompareModal">
+                <i class="bi bi-trash"></i>
+                Vergleichsliste leeren
+            </button>
         }
     </div>
 
     @if (!string.IsNullOrEmpty(Model.SuccessMessage))
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="page-message page-message-success" role="status">
             <i class="bi bi-check-circle"></i> @Model.SuccessMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="page-message page-message-danger" role="status">
             <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     @if (!Model.CompareItems.Any())
     {
-        <div class="alert alert-light border text-center py-5">
+        <div class="page-message page-message-neutral text-center py-5">
             <i class="bi bi-clipboard-x display-1 d-block mb-3 text-muted"></i>
             <h4 class="text-dark">Ihre Vergleichsliste ist leer</h4>
             <p class="mb-4 text-muted">Fügen Sie Produkte aus derselben Kategorie hinzu, um sie zu vergleichen.</p>
@@ -52,7 +48,7 @@
     }
     else
     {
-        <div class="alert alert-light border">
+        <div class="page-message page-message-neutral">
             <i class="bi bi-info-circle text-secondary"></i>
             <strong>Hinweis:</strong> Sie können bis zu 4 Produkte aus derselben Kategorie vergleichen.
         </div>
@@ -144,19 +140,14 @@
                                         </form>
                                     }
                                     
-                                    <a asp-page="/ProductDetail" asp-route-id="@item.ProductId" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-eye"></i> Details
-                                    </a>
-                                    
                                     <form method="post" asp-page-handler="AddToFavorites" asp-route-productId="@item.ProductId">
-                                        <button type="submit" class="btn btn-outline-warning btn-sm w-100">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
                                             <i class="bi bi-heart"></i> Zu Favoriten
                                         </button>
                                     </form>
-                                    
                                     <form method="post" asp-page-handler="Remove" asp-route-compareItemId="@item.Id">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
-                                            <i class="bi bi-x-circle"></i> Entfernen
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+                                            <i class="bi bi-trash"></i> Entfernen
                                         </button>
                                     </form>
                                 </div>
@@ -223,20 +214,14 @@
                                     </button>
                                 </form>
                             }
-                            
-                            <a asp-page="/ProductDetail" asp-route-id="@item.ProductId" class="btn btn-outline-primary">
-                                <i class="bi bi-eye"></i> Details anzeigen
-                            </a>
-                            
                             <form method="post" asp-page-handler="AddToFavorites" asp-route-productId="@item.ProductId">
-                                <button type="submit" class="btn btn-outline-warning w-100">
-                                    <i class="bi bi-heart"></i> Zu Favoriten hinzufügen
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-heart"></i> Zu Favoriten
                                 </button>
                             </form>
-                            
                             <form method="post" asp-page-handler="Remove" asp-route-compareItemId="@item.Id">
-                                <button type="submit" class="btn btn-outline-danger w-100">
-                                    <i class="bi bi-x-circle"></i> Aus Vergleich entfernen
+                                <button type="submit" class="btn btn-outline-secondary w-100">
+                                    <i class="bi bi-trash"></i> Entfernen
                                 </button>
                             </form>
                         </div>
@@ -246,3 +231,28 @@
         </div>
     }
 </div>
+
+@if (Model.CompareItems.Any())
+{
+    <div class="modal fade" id="clearCompareModal" tabindex="-1" aria-labelledby="clearCompareModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clearCompareModalLabel">Vergleichsliste leeren</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+                </div>
+                <div class="modal-body">
+                    Möchten Sie die Vergleichsliste wirklich leeren?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <form method="post" asp-page-handler="Clear">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Leeren
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

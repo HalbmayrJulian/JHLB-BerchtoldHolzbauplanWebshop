@@ -216,8 +216,10 @@
                 });
             }
 
+            const showMessage = window.showSiteToast || function(message) { console.warn(message); };
+
             // Favoriten Button Handler
-            const favoriteButtons = document.querySelectorAll('.btn-add-favorite');
+            const favoriteButtons = document.querySelectorAll('.btn-add-favorite, .btn-favorite-active');
 
             favoriteButtons.forEach(button => {
                 button.addEventListener('click', async function(e) {
@@ -229,52 +231,39 @@
                     const isActive = this.classList.contains('btn-favorite-active');
 
                     try {
-                        let response;
-
-                        if (isActive) {
-                            // Entfernen aus Favoriten
-                            response = await fetch('/Favorites?handler=RemoveByProductId', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                                },
-                                body: JSON.stringify({ productId: parseInt(productId) })
-                            });
-                        } else {
-                            // Hinzufügen zu Favoriten
-                            response = await fetch('/Favorites?handler=AddToFavorites', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                                },
-                                body: JSON.stringify({ productId: parseInt(productId) })
-                            });
-                        }
+                        const response = await fetch(`/Favorites?handler=${isActive ? 'RemoveByProductId' : 'AddToFavorites'}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                            },
+                            body: JSON.stringify({ productId: parseInt(productId) })
+                        });
 
                         const result = await response.json();
 
                         if (result.success) {
-                            // Toggle visuellen Status
                             if (isActive) {
-                                // Wurde entfernt
                                 icon.classList.remove('bi-heart-fill');
                                 icon.classList.add('bi-heart');
                                 this.classList.remove('btn-favorite-active');
                                 this.title = 'Zu Favoriten hinzufügen';
                             } else {
-                                // Wurde hinzugefügt
                                 icon.classList.remove('bi-heart');
                                 icon.classList.add('bi-heart-fill');
                                 this.classList.add('btn-favorite-active');
                                 this.title = 'Aus Favoriten entfernen';
                             }
+
+                            if (result.message) {
+                                showMessage(result.message, 'success', 'Favoriten');
+                            }
                         } else {
-                            console.warn('Favorit konnte nicht geändert werden:', result.message);
+                            showMessage(result.message || 'Der Favorit konnte nicht geändert werden.', 'danger', 'Fehler');
                         }
                     } catch (error) {
                         console.error('Fehler:', error);
+                        showMessage('Der Favorit konnte nicht geändert werden.', 'danger', 'Fehler');
                     }
                 });
             });
@@ -292,43 +281,25 @@
                     const isActive = this.classList.contains('btn-compare-active');
 
                     try {
-                        let response;
-
-                        if (isActive) {
-                            // Entfernen aus Vergleich
-                            response = await fetch('/Compare?handler=RemoveByProductId', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                                },
-                                body: JSON.stringify({ productId: parseInt(productId) })
-                            });
-                        } else {
-                            // Hinzufügen zum Vergleich
-                            response = await fetch('/Compare?handler=AddToCompare', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                                },
-                                body: JSON.stringify({ productId: parseInt(productId) })
-                            });
-                        }
+                        const response = await fetch(`/Compare?handler=${isActive ? 'RemoveByProductId' : 'AddToCompare'}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                            },
+                            body: JSON.stringify({ productId: parseInt(productId) })
+                        });
 
                         const result = await response.json();
 
                         if (result.success) {
-                            // Toggle visuellen Status
                             if (isActive) {
-                                // Wurde entfernt
                                 icon.classList.remove('bi-clipboard-check-fill');
                                 icon.classList.add('bi-clipboard-check');
                                 this.classList.remove('btn-compare-active');
                                 this.classList.add('btn-add-compare');
                                 this.title = 'Zum Vergleich hinzufügen';
                             } else {
-                                // Wurde hinzugefügt
                                 icon.classList.remove('bi-clipboard-check');
                                 icon.classList.add('bi-clipboard-check-fill');
                                 this.classList.remove('btn-add-compare');
@@ -336,17 +307,15 @@
                                 this.title = 'Aus Vergleich entfernen';
                             }
 
-                            // Optional: Show toast notification
-                            if (!isActive && result.message) {
-                                // You can add a toast notification here if desired
-                                console.log(result.message);
+                            if (result.message) {
+                                showMessage(result.message, 'success', 'Vergleich');
                             }
                         } else {
-                            alert(result.message || 'Fehler beim Ändern des Vergleichs');
+                            showMessage(result.message || 'Der Vergleich konnte nicht geändert werden.', 'danger', 'Fehler');
                         }
                     } catch (error) {
                         console.error('Fehler:', error);
-                        alert('Ein Fehler ist aufgetreten');
+                        showMessage('Der Vergleich konnte nicht geändert werden.', 'danger', 'Fehler');
                     }
                 });
             });

@@ -213,6 +213,7 @@
         const decreaseBtn = document.getElementById('decrease-qty');
         const increaseBtn = document.getElementById('increase-qty');
         const favoriteBtn = document.querySelector('.btn-favorite-toggle-detail');
+        const showMessage = window.showSiteToast || function(message) { console.warn(message); };
         
         // Verhindere das Standard-Verhalten des Number-Inputs bei den Browser-Pfeilen
         if (quantityInput) {
@@ -288,16 +289,14 @@
                 const productId = @(Model.Product?.Id ?? 0);
                 
                 if (productId === 0) {
-                    alert('Produktfehler');
+                    showMessage('Produktfehler', 'danger', 'Fehler');
                     return;
                 }
                 
-                // Zeige Loading
                 const originalHtml = addToCartBtn.innerHTML;
                 addToCartBtn.disabled = true;
                 addToCartBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Wird hinzugefügt...';
                 
-                // Build form data
                 const formData = new FormData();
                 formData.append('productId', productId);
                 formData.append('quantity', quantity);
@@ -317,12 +316,10 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        // Erfolg anzeigen
                         addToCartBtn.innerHTML = '<i class="bi bi-check-circle"></i> Hinzugefügt!';
                         addToCartBtn.classList.add('btn-success');
                         addToCartBtn.classList.remove('btn-primary');
                         
-                        // Update Cart Badge
                         const cartBadge = document.querySelector('.navbar .badge');
                         if (cartBadge) {
                             cartBadge.textContent = data.cartCount;
@@ -332,7 +329,10 @@
                             }, 200);
                         }
                         
-                        // Zurück zum ursprünglichen Zustand nach 2 Sekunden
+                        if (data.message) {
+                            showMessage(data.message, 'success', 'Warenkorb');
+                        }
+                        
                         setTimeout(() => {
                             addToCartBtn.innerHTML = originalHtml;
                             addToCartBtn.classList.remove('btn-success');
@@ -340,14 +340,14 @@
                             addToCartBtn.disabled = false;
                         }, 2000);
                     } else {
-                        alert(data.message || 'Fehler beim Hinzufügen');
+                        showMessage(data.message || 'Fehler beim Hinzufügen', 'danger', 'Fehler');
                         addToCartBtn.innerHTML = originalHtml;
                         addToCartBtn.disabled = false;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Ein Fehler ist aufgetreten: ' + error.message);
+                    showMessage('Ein Fehler ist aufgetreten: ' + error.message, 'danger', 'Fehler');
                     addToCartBtn.innerHTML = originalHtml;
                     addToCartBtn.disabled = false;
                 });
@@ -390,14 +390,18 @@
                             this.setAttribute('data-is-favorite', 'true');
                             this.innerHTML = '<i class="bi bi-heart-fill text-danger"></i> <span>Aus Favoriten entfernen</span>';
                         }
+
+                        if (result.message) {
+                            showMessage(result.message, 'success', 'Favoriten');
+                        }
                     } else {
                         this.innerHTML = originalHtml;
-                        alert(result.message || 'Fehler beim Ändern der Favoriten');
+                        showMessage(result.message || 'Fehler beim Ändern der Favoriten', 'danger', 'Fehler');
                     }
                 } catch (error) {
                     console.error('Fehler:', error);
                     this.innerHTML = originalHtml;
-                    alert('Ein Fehler ist aufgetreten');
+                    showMessage('Ein Fehler ist aufgetreten', 'danger', 'Fehler');
                 } finally {
                     this.disabled = false;
                 }

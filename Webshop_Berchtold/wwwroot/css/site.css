@@ -1929,6 +1929,43 @@ body > .container {
   border-color: var(--color-light-gray) !important;
 }
 
-.text-secondary {
-  color: #6c757d !important;
+/* Clean message banners */
+.page-message {
+  border-radius: 0.75rem;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+
+.page-message-success {
+  background-color: rgba(27, 110, 194, 0.08);
+  border-color: rgba(27, 110, 194, 0.2);
+  color: var(--color-dark);
+}
+
+.page-message-danger {
+  background-color: rgba(220, 53, 69, 0.08);
+  border-color: rgba(220, 53, 69, 0.2);
+  color: var(--color-dark);
+}
+
+.page-message-neutral {
+  background-color: rgba(248, 249, 250, 1);
+  border-color: #dee2e6;
+  color: var(--color-dark);
+}
+
+.search-inline-message {
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.search-inline-message-danger {
+  background-color: rgba(220, 53, 69, 0.08);
+  color: #b02a37;
+  border: 1px solid rgba(220, 53, 69, 0.2);
 }

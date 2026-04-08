@@ -1,7 +1,36 @@
-﻿// Bitte siehe die Dokumentation unter https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿// Bitte sehe die Dokumentation unter https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // für Einzelheiten zur Konfiguration dieses Projekts zum Bündeln und Minimieren von statischen Webressourcen.
 
 // Schreibe deinen JavaScript-Code.
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function showSiteToast(message, type = 'info', title = 'Hinweis') {
+    if (!message) {
+        return;
+    }
+
+    // Floating site messages are disabled to keep the page unobstructed.
+    if (window.console) {
+        const text = `${title}: ${message}`;
+        if (type === 'danger') {
+            console.error(text);
+        } else if (type === 'warning') {
+            console.warn(text);
+        } else {
+            console.info(text);
+        }
+    }
+}
+
+window.showSiteToast = showSiteToast;
 
 // ========================================
 // LIVE SEARCH FUNKTIONALITÄT
@@ -87,12 +116,16 @@ function performSearch(query) {
         })
         .catch(error => {
             console.error('Search error:', error);
-            searchResults.innerHTML = `
-                <div class="alert alert-danger alert-sm m-0">
-                    <i class="bi bi-exclamation-triangle"></i> 
-                    Ein Fehler ist aufgetreten.
-                </div>
-            `;
+            if (searchResults) {
+                searchResults.innerHTML = `
+                    <div class="search-inline-message search-inline-message-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Die Suche konnte nicht geladen werden.</span>
+                    </div>
+                `;
+                searchResults.classList.add('show');
+            }
+            showSiteToast('Die Suche konnte nicht geladen werden.', 'danger', 'Fehler');
         });
 }
 
