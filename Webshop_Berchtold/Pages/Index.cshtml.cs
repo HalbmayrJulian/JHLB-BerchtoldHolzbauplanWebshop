@@ -38,9 +38,12 @@ namespace Webshop_Berchtold.Pages
         public List<BestsellerRecommendation> BestsellerProducts { get; set; } = new();
         public HashSet<int> FavoriteProductIds { get; set; } = new();
         public HashSet<int> CompareProductIds { get; set; } = new();
+        public int? SelectedCategoryId { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? categoryId = null)
         {
+            SelectedCategoryId = categoryId;
+
             // Lade alle Kategorien
             Categories = await _context.Categories
                 .OrderBy(c => c.Id)

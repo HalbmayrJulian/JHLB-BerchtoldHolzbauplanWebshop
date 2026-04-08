@@ -43,11 +43,10 @@
 <div class="container">
     <div class="category-nav">
         <nav class="nav nav-pills justify-content-center">
-            <a class="nav-link active" href="#alle">Alle Produkte</a>
+            <a class="nav-link active" asp-page="/Index">Alle Produkte</a>
             @foreach (var category in Model.Categories)
             {
-                var anchorId = category.Name.Replace(" ", "-").Replace("&", "").ToLower();
-                <a class="nav-link" href="#@anchorId">@category.Name</a>
+                <a class="nav-link" asp-page="/Index" asp-route-categoryId="@category.Id">@category.Name</a>
             }
         </nav>
     </div>
@@ -111,7 +110,7 @@
     {
         if (Model.ProductsByCategory.ContainsKey(category.Id) && Model.ProductsByCategory[category.Id].Any())
         {
-            var anchorId = category.Name.Replace(" ", "-").Replace("&", "").ToLower();
+            var anchorId = $"category-{category.Id}";
             var products = Model.ProductsByCategory[category.Id];
             
             <!-- Kategorie Icon Mapping -->
@@ -207,6 +206,16 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const selectedCategoryId = '@(Model.SelectedCategoryId?.ToString() ?? string.Empty)';
+            if (selectedCategoryId) {
+                window.addEventListener('load', function() {
+                    const target = document.getElementById('category-' + selectedCategoryId);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            }
+
             // Favoriten Button Handler
             const favoriteButtons = document.querySelectorAll('.btn-add-favorite');
 
