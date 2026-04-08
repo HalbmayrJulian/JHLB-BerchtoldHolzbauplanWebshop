@@ -7,6 +7,8 @@
     ViewData["Title"] = "Produktdetails";
 }
 
+@Html.AntiForgeryToken()
+
 <!-- Produktdetail Section -->
 <div class="container product-detail-container">
     <div class="row">
@@ -130,18 +132,21 @@
                                     @if (SignInManager.IsSignedIn(User))
                                     {
                                         <div class="text-center mt-2">
-                                            @if (Model.IsInFavorites)
-                                            {
-                                                <button type="button" class="btn btn-sm btn-link text-muted" disabled>
-                                                    <i class="bi bi-heart-fill text-danger"></i> Bereits in Favoriten
-                                                </button>
-                                            }
-                                            else
-                                            {
-                                                <button type="button" class="btn btn-sm btn-link text-decoration-none btn-add-favorite-detail" data-product-id="@Model.Product.Id">
-                                                    <i class="bi bi-heart"></i> Zu Favoriten hinzufügen
-                                                </button>
-                                            }
+                                            <button type="button"
+                                                    class="btn btn-sm btn-link text-decoration-none btn-add-favorite-detail btn-favorite-toggle-detail"
+                                                    data-product-id="@Model.Product.Id"
+                                                    data-is-favorite="@(Model.IsInFavorites ? "true" : "false")">
+                                                @if (Model.IsInFavorites)
+                                                {
+                                                    <i class="bi bi-heart-fill text-danger"></i>
+                                                    <span>Aus Favoriten entfernen</span>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-heart"></i>
+                                                    <span>Zu Favoriten hinzufügen</span>
+                                                }
+                                            </button>
                                         </div>
                                     }
                                 </div>
@@ -153,18 +158,21 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <div class="text-center mt-3">
-                                @if (Model.IsInFavorites)
-                                {
-                                    <button type="button" class="btn btn-sm btn-link text-muted" disabled>
-                                        <i class="bi bi-heart-fill text-danger"></i> Bereits in Favoriten
-                                    </button>
-                                }
-                                else
-                                {
-                                    <button type="button" class="btn btn-sm btn-link text-decoration-none btn-add-favorite-detail" data-product-id="@Model.Product.Id">
-                                        <i class="bi bi-heart"></i> Zu Favoriten hinzufügen
-                                    </button>
-                                }
+                                <button type="button"
+                                        class="btn btn-sm btn-link text-decoration-none btn-add-favorite-detail btn-favorite-toggle-detail"
+                                        data-product-id="@Model.Product.Id"
+                                        data-is-favorite="@(Model.IsInFavorites ? "true" : "false")">
+                                    @if (Model.IsInFavorites)
+                                    {
+                                        <i class="bi bi-heart-fill text-danger"></i>
+                                        <span>Aus Favoriten entfernen</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-heart"></i>
+                                        <span>Zu Favoriten hinzufügen</span>
+                                    }
+                                </button>
                             </div>
                         }
                     }
@@ -204,6 +212,7 @@
         const quantityInput = document.getElementById('quantity');
         const decreaseBtn = document.getElementById('decrease-qty');
         const increaseBtn = document.getElementById('increase-qty');
+        const favoriteBtn = document.querySelector('.btn-favorite-toggle-detail');
         
         // Verhindere das Standard-Verhalten des Number-Inputs bei den Browser-Pfeilen
         if (quantityInput) {
@@ -346,27 +355,23 @@
         }
 
         // Favoriten Button Handler
-        const favoriteBtn = document.querySelector('.btn-add-favorite-detail');
         if (favoriteBtn) {
             favoriteBtn.addEventListener('click', async function(e) {
                 e.preventDefault();
+
                 const productId = this.getAttribute('data-product-id');
+                const isFavorite = this.getAttribute('data-is-favorite') === 'true';
                 const originalHtml = this.innerHTML;
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
 
                 this.disabled = true;
-                this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Hinzufügen...';
 
                 try {
-                    // Get Anti-CSRF token
-                    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
-
-                    console.log('Adding product to favorites:', productId);
-
-                    const response = await fetch('/Favorites?handler=AddToFavorites', {
+                    const response = await fetch(`/Favorites?handler=${isFavorite ? 'RemoveByProductId' : 'AddToFavorites'}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'RequestVerificationToken': token || ''
+                            'RequestVerificationToken': token
                         },
                         body: JSON.stringify({ productId: parseInt(productId) })
                     });
@@ -376,21 +381,24 @@
                     }
 
                     const result = await response.json();
-                    console.log('Favorites response:', result);
 
                     if (result.success) {
-                        this.innerHTML = '<i class="bi bi-heart-fill text-danger"></i> Bereits in Favoriten';
-                        this.classList.remove('btn-add-favorite-detail');
-                        this.classList.add('text-muted');
-                        // Notification entfernt
+                        if (isFavorite) {
+                            this.setAttribute('data-is-favorite', 'false');
+                            this.innerHTML = '<i class="bi bi-heart"></i> <span>Zu Favoriten hinzufügen</span>';
+                        } else {
+                            this.setAttribute('data-is-favorite', 'true');
+                            this.innerHTML = '<i class="bi bi-heart-fill text-danger"></i> <span>Aus Favoriten entfernen</span>';
+                        }
                     } else {
                         this.innerHTML = originalHtml;
-                        this.disabled = false;
-                        console.warn('Favorit konnte nicht hinzugefügt werden:', result.message);
+                        alert(result.message || 'Fehler beim Ändern der Favoriten');
                     }
                 } catch (error) {
                     console.error('Fehler:', error);
                     this.innerHTML = originalHtml;
+                    alert('Ein Fehler ist aufgetreten');
+                } finally {
                     this.disabled = false;
                 }
             });
